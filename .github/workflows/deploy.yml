@@ -22,11 +22,11 @@ jobs:
           port: 22
           timeout: 5m
           script: |
-            cd /easysitebuilder/easybuilder
+            cd /easysitebuilder/Multi-Tenant
             git stash
             git pull 
             npm install 
             npm run build -- --webpack
-            pm2 delete easysitebuilder || true
-            PORT=3000 pm2 start /easysitebuilder/easybuilder/node_modules/next/dist/bin/next --name "easysitebuilder" -- start
+            pm2 delete Multi-Tenant || true
+            PORT=3001 pm2 start /easysitebuilder/Multi-Tenant/node_modules/next/dist/bin/next --name "Multi-Tenant" -- start
             pm2 save
