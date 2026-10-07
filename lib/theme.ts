@@ -31,9 +31,9 @@ export function iconClass(theme: ThemeTokens) {
 }
 
 const CLINICAL_RE =
-  /پزشک|درمان|کلینیک|دندان|دکتر|درمانگاه|clinic|doctor|medical|dentist|physio|therapy|hospital/;
+  /پزشک|درمان|کلینیک|دندان|دکتر|درمانگاه|clinic|doctor|medical|dentist|physio|therapy|hospital|klinik|arzt|zahnarzt|physiotherapie/;
 const LUXURY_RE =
-  /آرایش|زیبایی|سالن|ناخن|کوآف|salon|beauty|hair|makeup|nail|barber|spa.?salon/;
+  /آرایش|زیبایی|سالن|ناخن|کوآف|salon|beauty|hair|makeup|nail|barber|spa.?salon|friseur|kosmetik|nägel/;
 const ZEN_RE = /ماساژ|اسپا|spa|massage|yoga|wellness|ریلکس|حجامت|meditation/;
 
 function collectCorpus(siteData: any): string {

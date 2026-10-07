@@ -1,17 +1,32 @@
-import type { ThemeTokens } from '@/lib/theme';
+import type { Dictionary } from "@/lib/i18n/get-dictionary";
+import type { Locale } from "@/lib/i18n/config";
+import type { ThemeTokens } from "@/lib/theme";
 
 function unwrap(data: any) {
-  if (data?.data && typeof data.data === 'object' && !Array.isArray(data.data)) {
+  if (
+    data?.data &&
+    typeof data.data === "object" &&
+    !Array.isArray(data.data)
+  ) {
     return { ...data, ...data.data };
   }
   return data;
 }
 
-export default function HeroSection({ data, theme }: { data: any; theme: ThemeTokens }) {
+export default function HeroSection({
+  data,
+  theme,
+  dict,
+}: {
+  data: any;
+  theme: ThemeTokens;
+  dict: Dictionary;
+  locale: Locale;
+}) {
   const source = unwrap(data);
   const bgImage = source?.image_url || source?.image || source?.cover;
-  const title = source?.title || 'به وب‌سایت ما خوش آمدید';
-  const subtitle = source?.subtitle || '';
+  const title = source?.title || dict.hero.welcome;
+  const subtitle = source?.subtitle || "";
 
   return (
     <section className="relative min-h-[72vh] flex items-center justify-center overflow-hidden pt-28 pb-16">
@@ -19,7 +34,9 @@ export default function HeroSection({ data, theme }: { data: any; theme: ThemeTo
         <>
           <div
             className="absolute inset-0 scale-105 bg-cover bg-center"
-            style={{ backgroundImage: `url('${String(bgImage).replace(/'/g, '%27')}')` }}
+            style={{
+              backgroundImage: `url('${String(bgImage).replace(/'/g, "%27")}')`,
+            }}
           />
           <div className="absolute inset-0 bg-black/55" />
         </>
@@ -38,14 +55,14 @@ export default function HeroSection({ data, theme }: { data: any; theme: ThemeTo
       <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
         <div
           className={`mb-6 inline-flex rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide ${
-            bgImage ? 'border-white/20 bg-white/10 text-white' : theme.badgeBg
+            bgImage ? "border-white/20 bg-white/10 text-white" : theme.badgeBg
           }`}
         >
-          وب‌سایت رسمی
+          {dict.hero.officialSite}
         </div>
         <h1
           className={`mb-6 text-5xl font-black leading-[1.1] tracking-tight sm:text-7xl ${
-            bgImage ? 'text-white' : theme.textPrimary
+            bgImage ? "text-white" : theme.textPrimary
           }`}
         >
           {title}
@@ -53,7 +70,7 @@ export default function HeroSection({ data, theme }: { data: any; theme: ThemeTo
         {subtitle ? (
           <p
             className={`mx-auto mb-10 max-w-2xl text-lg leading-relaxed sm:text-xl ${
-              bgImage ? 'text-white/80' : theme.textSecondary
+              bgImage ? "text-white/80" : theme.textSecondary
             }`}
           >
             {subtitle}
@@ -66,17 +83,17 @@ export default function HeroSection({ data, theme }: { data: any; theme: ThemeTo
             href="#services"
             className={`rounded-full px-6 py-3 text-sm font-bold text-white shadow-sm transition ${theme.accent} ${theme.accentHover}`}
           >
-            مشاهده خدمات
+            {dict.hero.viewServices}
           </a>
           <a
             href="#contact"
             className={`rounded-full border px-6 py-3 text-sm font-semibold transition ${
               bgImage
-                ? 'border-white/30 text-white hover:bg-white/10'
+                ? "border-white/30 text-white hover:bg-white/10"
                 : `${theme.border} ${theme.textPrimary} hover:opacity-80`
             }`}
           >
-            تماس با ما
+            {dict.hero.contactUs}
           </a>
         </div>
       </div>

@@ -1,0 +1,230 @@
+{
+  "meta": {
+    "defaultTitle": "Official website",
+    "defaultDescription": "Welcome to our website"
+  },
+  "nav": {
+    "services": "Services",
+    "hours": "Hours",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "book": "Book",
+    "gallery": "Gallery",
+    "menu": "Menu",
+    "projects": "Projects",
+    "quote": "Quote",
+    "reserve": "Reserve",
+    "about": "About"
+  },
+  "hero": {
+    "officialSite": "Official website",
+    "welcome": "Welcome to our website",
+    "viewServices": "View services",
+    "contactUs": "Contact us"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "Our services"
+  },
+  "hours": {
+    "title": "Opening hours",
+    "separator": "to"
+  },
+  "contact": {
+    "title": "Contact",
+    "owner": "Owner",
+    "ownerFallback": "Registered in the system",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address"
+  },
+  "faq": {
+    "eyebrow": "Help",
+    "title": "Frequently asked questions"
+  },
+  "footer": {
+    "tagline": "Designed for your business"
+  },
+  "notFound": {
+    "title": "404 – Website not found",
+    "message": "This address is not connected to any website."
+  },
+  "language": {
+    "label": "Language"
+  },
+  "templates": {
+    "book": "Book appointment",
+    "reserve": "Reserve a table",
+    "quote": "Request a quote",
+    "gallery": "Gallery",
+    "projects": "Projects",
+    "menu": "Menu",
+    "about": "About us",
+    "bio": "The practice",
+    "highlights": "Highlights",
+    "bookingTitle": "Book an appointment",
+    "reservationTitle": "Table reservation",
+    "quoteTitle": "Request a quote",
+    "formName": "Name",
+    "formPhone": "Phone",
+    "formEmail": "Email",
+    "formDate": "Date",
+    "formTime": "Time",
+    "formGuests": "Guests",
+    "formMessage": "Message",
+    "formSubmit": "Send",
+    "formSuccess": "Thank you. We will get back to you shortly.",
+    "formNote": "Non-binding enquiry — frontend only, no backend yet.",
+    "priceOnRequest": "on request"
+  },
+  "defaults": {
+    "phone": "+49 (0) 30 0000 0000",
+    "email": "hello@company.de",
+    "address": "Berlin, Germany",
+    "hours": "Monday–Friday, 09:00 – 18:00",
+    "subtitle": "Personal. Reliable. On site.",
+    "about": "We combine clear advice, transparent services and a team that cares about quality.",
+    "services": [
+      {
+        "title": "Consultation",
+        "description": "An open first conversation about your needs.",
+        "price": "on request"
+      },
+      {
+        "title": "Delivery",
+        "description": "Careful work tailored to your brief.",
+        "price": "on request"
+      },
+      {
+        "title": "Support",
+        "description": "Follow-up after the appointment.",
+        "price": "on request"
+      }
+    ],
+    "servicesByType": {
+      "medical": [
+        {
+          "title": "First consultation",
+          "description": "We take time to understand your concern.",
+          "price": "on request",
+          "duration": "30 min"
+        },
+        {
+          "title": "Examination",
+          "description": "Thorough diagnostics in a calm setting.",
+          "price": "on request",
+          "duration": "45 min"
+        },
+        {
+          "title": "Treatment",
+          "description": "A personal plan and aftercare.",
+          "price": "on request",
+          "duration": "45 min"
+        }
+      ],
+      "salon": [
+        {
+          "title": "Haircut",
+          "description": "Cut and style to your brief.",
+          "price": "on request",
+          "duration": "45 min"
+        },
+        {
+          "title": "Beard & care",
+          "description": "Shape, care and finish.",
+          "price": "on request",
+          "duration": "30 min"
+        },
+        {
+          "title": "Colour",
+          "description": "Colour and care for a clean look.",
+          "price": "on request",
+          "duration": "90 min"
+        }
+      ],
+      "restaurant": [
+        {
+          "title": "Lunch",
+          "description": "Seasonal dishes from the region.",
+          "price": "on request"
+        },
+        {
+          "title": "Evening menu",
+          "description": "House classics and daily specials.",
+          "price": "on request"
+        },
+        {
+          "title": "Drinks",
+          "description": "Wines, soft drinks and coffee.",
+          "price": "on request"
+        }
+      ],
+      "services": [
+        {
+          "title": "On-site visit",
+          "description": "Advice and survey at your location.",
+          "price": "on request"
+        },
+        {
+          "title": "Delivery",
+          "description": "Clean execution by our trade team.",
+          "price": "on request"
+        },
+        {
+          "title": "Maintenance",
+          "description": "Follow-up care when you need it.",
+          "price": "on request"
+        }
+      ],
+      "general": [
+        {
+          "title": "Consultation",
+          "description": "A clear view of next steps.",
+          "price": "on request"
+        },
+        {
+          "title": "Planning",
+          "description": "A structured path for your project.",
+          "price": "on request"
+        },
+        {
+          "title": "Support",
+          "description": "A reliable contact throughout.",
+          "price": "on request"
+        }
+      ]
+    },
+    "menu": [
+      {
+        "category": "Starters",
+        "items": [
+          {
+            "name": "Seasonal starter",
+            "description": "From the daily menu, locally sourced.",
+            "price": "on request"
+          }
+        ]
+      },
+      {
+        "category": "Mains",
+        "items": [
+          {
+            "name": "House recommendation",
+            "description": "Prepared fresh each day.",
+            "price": "on request"
+          }
+        ]
+      },
+      {
+        "category": "Desserts",
+        "items": [
+          {
+            "name": "Homemade dessert",
+            "description": "Light and seasonal.",
+            "price": "on request"
+          }
+        ]
+      }
+    ]
+  }
+}

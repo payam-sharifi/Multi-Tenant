@@ -1,0 +1,230 @@
+{
+  "meta": {
+    "defaultTitle": "Offizielle Website",
+    "defaultDescription": "Willkommen auf unserer Website"
+  },
+  "nav": {
+    "services": "Leistungen",
+    "hours": "Öffnungszeiten",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "book": "Termin",
+    "gallery": "Galerie",
+    "menu": "Karte",
+    "projects": "Projekte",
+    "quote": "Angebot",
+    "reserve": "Reservierung",
+    "about": "Über uns"
+  },
+  "hero": {
+    "officialSite": "Offizielle Website",
+    "welcome": "Willkommen auf unserer Website",
+    "viewServices": "Leistungen ansehen",
+    "contactUs": "Kontakt aufnehmen"
+  },
+  "services": {
+    "eyebrow": "Leistungen",
+    "title": "Unsere Leistungen"
+  },
+  "hours": {
+    "title": "Öffnungszeiten",
+    "separator": "bis"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "owner": "Inhaber",
+    "ownerFallback": "Im System hinterlegt",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "address": "Adresse"
+  },
+  "faq": {
+    "eyebrow": "Hilfe",
+    "title": "Häufige Fragen"
+  },
+  "footer": {
+    "tagline": "Gestaltet für Ihr Unternehmen"
+  },
+  "notFound": {
+    "title": "404 – Website nicht gefunden",
+    "message": "Diese Adresse ist mit keiner Website verbunden."
+  },
+  "language": {
+    "label": "Sprache"
+  },
+  "templates": {
+    "book": "Termin buchen",
+    "reserve": "Tisch reservieren",
+    "quote": "Angebot anfragen",
+    "gallery": "Galerie",
+    "projects": "Projekte",
+    "menu": "Speisekarte",
+    "about": "Über uns",
+    "bio": "Zur Praxis",
+    "highlights": "Empfehlungen",
+    "bookingTitle": "Terminvereinbarung",
+    "reservationTitle": "Tischreservierung",
+    "quoteTitle": "Angebot anfragen",
+    "formName": "Name",
+    "formPhone": "Telefon",
+    "formEmail": "E-Mail",
+    "formDate": "Datum",
+    "formTime": "Uhrzeit",
+    "formGuests": "Gäste",
+    "formMessage": "Nachricht",
+    "formSubmit": "Absenden",
+    "formSuccess": "Vielen Dank. Wir melden uns in Kürze.",
+    "formNote": "Unverbindliche Anfrage — ohne Backend-Anbindung.",
+    "priceOnRequest": "auf Anfrage"
+  },
+  "defaults": {
+    "phone": "+49 (0) 30 0000 0000",
+    "email": "kontakt@unternehmen.de",
+    "address": "Berlin, Deutschland",
+    "hours": "Montag–Freitag, 09:00 – 18:00",
+    "subtitle": "Persönlich. Zuverlässig. Vor Ort.",
+    "about": "Wir begleiten Sie mit klarer Beratung, transparenten Leistungen und einem Team, das auf Qualität achtet.",
+    "services": [
+      {
+        "title": "Beratung",
+        "description": "Unverbindliches Erstgespräch zu Ihrem Anliegen.",
+        "price": "auf Anfrage"
+      },
+      {
+        "title": "Umsetzung",
+        "description": "Sorgfältige Ausführung nach Ihrem Bedarf.",
+        "price": "auf Anfrage"
+      },
+      {
+        "title": "Betreuung",
+        "description": "Nachhaltige Begleitung nach dem Termin.",
+        "price": "auf Anfrage"
+      }
+    ],
+    "servicesByType": {
+      "medical": [
+        {
+          "title": "Erstberatung",
+          "description": "Aufnahme und Besprechung Ihres Anliegens.",
+          "price": "auf Anfrage",
+          "duration": "30 Min."
+        },
+        {
+          "title": "Untersuchung",
+          "description": "Gründliche Diagnostik in ruhiger Atmosphäre.",
+          "price": "auf Anfrage",
+          "duration": "45 Min."
+        },
+        {
+          "title": "Therapie",
+          "description": "Individueller Behandlungsplan und Nachsorge.",
+          "price": "auf Anfrage",
+          "duration": "45 Min."
+        }
+      ],
+      "salon": [
+        {
+          "title": "Haarschnitt",
+          "description": "Schnitt und Styling nach Wunsch.",
+          "price": "auf Anfrage",
+          "duration": "45 Min."
+        },
+        {
+          "title": "Bart & Pflege",
+          "description": "Konturen, Pflege und Finish.",
+          "price": "auf Anfrage",
+          "duration": "30 Min."
+        },
+        {
+          "title": "Coloration",
+          "description": "Farbe und Pflege für einen klaren Look.",
+          "price": "auf Anfrage",
+          "duration": "90 Min."
+        }
+      ],
+      "restaurant": [
+        {
+          "title": "Mittagstisch",
+          "description": "Saisonale Gerichte aus der Region.",
+          "price": "auf Anfrage"
+        },
+        {
+          "title": "Abendkarte",
+          "description": "Klassiker und Empfehlungen des Hauses.",
+          "price": "auf Anfrage"
+        },
+        {
+          "title": "Getränke",
+          "description": "Weine, Soft Drinks und Kaffee.",
+          "price": "auf Anfrage"
+        }
+      ],
+      "services": [
+        {
+          "title": "Vor-Ort-Termin",
+          "description": "Besichtigung und Beratung direkt bei Ihnen.",
+          "price": "auf Anfrage"
+        },
+        {
+          "title": "Ausführung",
+          "description": "Saubere Umsetzung durch unser Fachteam.",
+          "price": "auf Anfrage"
+        },
+        {
+          "title": "Wartung",
+          "description": "Pflege und Nacharbeit nach Bedarf.",
+          "price": "auf Anfrage"
+        }
+      ],
+      "general": [
+        {
+          "title": "Beratung",
+          "description": "Klare Einschätzung und nächste Schritte.",
+          "price": "auf Anfrage"
+        },
+        {
+          "title": "Planung",
+          "description": "Strukturiertes Vorgehen für Ihr Vorhaben.",
+          "price": "auf Anfrage"
+        },
+        {
+          "title": "Betreuung",
+          "description": "Verlässlicher Kontakt über den gesamten Verlauf.",
+          "price": "auf Anfrage"
+        }
+      ]
+    },
+    "menu": [
+      {
+        "category": "Vorspeisen",
+        "items": [
+          {
+            "name": "Saisonale Vorspeise",
+            "description": "Nach Tageskarte, regional bezogen.",
+            "price": "auf Anfrage"
+          }
+        ]
+      },
+      {
+        "category": "Hauptgerichte",
+        "items": [
+          {
+            "name": "Empfehlung des Hauses",
+            "description": "Täglich frisch zubereitet.",
+            "price": "auf Anfrage"
+          }
+        ]
+      },
+      {
+        "category": "Desserts",
+        "items": [
+          {
+            "name": "Hausgemachte Süßspeise",
+            "description": "Leicht und saisonal.",
+            "price": "auf Anfrage"
+          }
+        ]
+      }
+    ]
+  }
+}

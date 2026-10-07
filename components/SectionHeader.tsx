@@ -1,4 +1,4 @@
-import type { ThemeTokens } from '@/lib/theme';
+import type { ThemeTokens } from "@/lib/theme";
 
 export default function SectionHeader({
   eyebrow,
@@ -18,7 +18,11 @@ export default function SectionHeader({
           {eyebrow}
         </span>
       ) : null}
-      <h2 className={`text-3xl sm:text-4xl font-black tracking-tight ${theme.textPrimary}`}>{title}</h2>
+      <h2
+        className={`text-3xl sm:text-4xl font-black tracking-tight ${theme.textPrimary}`}
+      >
+        {title}
+      </h2>
     </div>
   );
 }
