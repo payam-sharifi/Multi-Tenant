@@ -1,0 +1,949 @@
+{
+  "site_data": {
+    "business_name": "Lumera Clinic",
+    "services": {
+      "eyebrow": {
+        "de": "Unsere Bereiche",
+        "en": "Our directions"
+      },
+      "title": {
+        "de": "Sechs Bereiche. Ein Qualitätsanspruch.",
+        "en": "Six directions. One standard of care."
+      },
+      "subtitle": {
+        "de": "Fahren Sie mit der Maus über einen Bereich, um mehr zu erfahren — alle Leistungen werden von zertifizierten Fachleuten mit moderner Ausstattung erbracht.",
+        "en": "Hover over a direction to explore it — every service is delivered by certified specialists with modern equipment."
+      },
+      "bookLabel": {
+        "de": "Buchen",
+        "en": "Book"
+      },
+      "fromLabel": {
+        "de": "ab",
+        "en": "from"
+      },
+      "items": [
+        {
+          "id": "therapy",
+          "order": 1,
+          "icon": "stethoscope",
+          "image": "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=900&q=80",
+          "title": {
+            "de": "Allgemeinmedizin",
+            "en": "Therapy"
+          },
+          "description": {
+            "de": "Ihre erste Anlaufstelle bei jedem Gesundheitsanliegen: Untersuchung, Diagnose, Behandlungsplan und Überweisung zu Fachärzten.",
+            "en": "Your first stop for any health concern: examination, diagnosis, treatment plan and referrals to narrow specialists."
+          },
+          "tags": {
+            "de": [
+              "Beratung",
+              "Hausbesuche",
+              "Krankschreibung",
+              "Impfungen"
+            ],
+            "en": [
+              "Consultation",
+              "Home visits",
+              "Sick leave",
+              "Vaccination"
+            ]
+          },
+          "price": {
+            "de": "ab 80 €",
+            "en": "from €80"
+          },
+          "bookable": true
+        },
+        {
+          "id": "dentistry",
+          "order": 2,
+          "icon": "smile",
+          "image": "https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=900&q=80",
+          "title": {
+            "de": "Zahnmedizin",
+            "en": "Dentistry"
+          },
+          "description": {
+            "de": "Schmerzfreie Behandlung, Prophylaxe, Kieferorthopädie und Implantate. Digitale 3D-Diagnostik und sanfte Betäubung.",
+            "en": "Painless treatment, hygiene, orthodontics and implants. Digital 3D diagnostics and gentle anesthesia."
+          },
+          "tags": {
+            "de": [
+              "Prophylaxe",
+              "Implantate",
+              "Zahnspangen",
+              "Bleaching"
+            ],
+            "en": [
+              "Hygiene",
+              "Implants",
+              "Braces",
+              "Whitening"
+            ]
+          },
+          "price": {
+            "de": "ab 70 €",
+            "en": "from €70"
+          },
+          "bookable": true
+        },
+        {
+          "id": "womens-health",
+          "order": 3,
+          "icon": "flower2",
+          "image": "https://images.unsplash.com/photo-1493894473891-10fc1e5dbd22?auto=format&fit=crop&w=900&q=80",
+          "title": {
+            "de": "Frauengesundheit",
+            "en": "Women's health"
+          },
+          "description": {
+            "de": "Gynäkologie, Schwangerschaftsbetreuung, Zytologie und hormonelle Gesundheit — einfühlsam und streng vertraulich.",
+            "en": "Gynecology, pregnancy care, cytology and hormonal health with empathy and absolute confidentiality."
+          },
+          "tags": {
+            "de": [
+              "Gynäkologie",
+              "Schwangerschaft",
+              "Zytologie",
+              "Hormone"
+            ],
+            "en": [
+              "Gynecology",
+              "Pregnancy",
+              "Cytology",
+              "Hormones"
+            ]
+          },
+          "price": {
+            "de": "ab 90 €",
+            "en": "from €90"
+          },
+          "bookable": true
+        },
+        {
+          "id": "pediatrics",
+          "order": 4,
+          "icon": "baby",
+          "image": "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=900&q=80",
+          "title": {
+            "de": "Pädiatrie",
+            "en": "Pediatrics"
+          },
+          "description": {
+            "de": "Fürsorgliche Kinderärzte für Neugeborene bis Jugendliche: Vorsorge, Impfungen und eine kindgerechte Atmosphäre.",
+            "en": "Caring pediatricians for newborns to teenagers: check-ups, vaccinations and a child-friendly atmosphere."
+          },
+          "tags": {
+            "de": [
+              "Neugeborene",
+              "Impfungen",
+              "Allergien",
+              "Entwicklung"
+            ],
+            "en": [
+              "Newborns",
+              "Vaccines",
+              "Allergy",
+              "Development"
+            ]
+          },
+          "price": {
+            "de": "ab 75 €",
+            "en": "from €75"
+          },
+          "bookable": true
+        },
+        {
+          "id": "diagnostics",
+          "order": 5,
+          "icon": "microscope",
+          "image": "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=900&q=80",
+          "title": {
+            "de": "Diagnostik",
+            "en": "Diagnostics"
+          },
+          "description": {
+            "de": "Ultraschall, EKG, Röntgen und Labortests — schnelle Ergebnisse und ausführliche Erklärung durch den Arzt.",
+            "en": "Ultrasound, ECG, X-ray and laboratory tests — fast results and detailed explanation from a doctor."
+          },
+          "tags": {
+            "de": [
+              "Ultraschall",
+              "EKG",
+              "Röntgen",
+              "Labor"
+            ],
+            "en": [
+              "Ultrasound",
+              "ECG",
+              "X-ray",
+              "Laboratory"
+            ]
+          },
+          "price": {
+            "de": "ab 40 €",
+            "en": "from €40"
+          },
+          "bookable": true
+        },
+        {
+          "id": "psychiatry",
+          "order": 6,
+          "icon": "brain",
+          "image": "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&w=900&q=80",
+          "title": {
+            "de": "Psychiatrie",
+            "en": "Psychiatry"
+          },
+          "description": {
+            "de": "Vertrauliche Unterstützung in Ihrer Muttersprache: Angst, Depression, Burnout und Schlafstörungen.",
+            "en": "Confidential support in your native language: anxiety, depression, burnout and sleep disorders."
+          },
+          "tags": {
+            "de": [
+              "Angst",
+              "Depression",
+              "Schlaf",
+              "Therapie"
+            ],
+            "en": [
+              "Anxiety",
+              "Depression",
+              "Sleep",
+              "Therapy"
+            ]
+          },
+          "price": {
+            "de": "ab 120 €",
+            "en": "from €120"
+          },
+          "bookable": true
+        }
+      ],
+      "express": {
+        "enabled": true,
+        "serviceId": "diagnostics",
+        "badge": {
+          "de": "Express-Analysen",
+          "en": "Express analyses"
+        },
+        "title": {
+          "de": "Laborergebnisse in nur 2 Stunden",
+          "en": "Lab results in as little as 2 hours"
+        },
+        "desc": {
+          "de": "Kommen Sie ohne Termin, geben Sie eine Probe ab und erhalten Sie Ihre Ergebnisse noch am selben Tag per SMS oder E-Mail.",
+          "en": "Walk in without an appointment, give a sample and receive your results by SMS or e-mail the same day."
+        },
+        "tags": {
+          "de": [
+            "Blutbild",
+            "Vitamine",
+            "Enzyme",
+            "Spezifische Proteine",
+            "Hormone"
+          ],
+          "en": [
+            "Blood test",
+            "Vitamins",
+            "Enzymes",
+            "Specific proteins",
+            "Hormones"
+          ]
+        },
+        "highlights": {
+          "de": [
+            "Ohne Termin",
+            "Ergebnis am selben Tag",
+            "Ärztlicher Kommentar inklusive"
+          ],
+          "en": [
+            "No appointment needed",
+            "Results same day",
+            "Doctor's comment included"
+          ]
+        },
+        "cta": {
+          "de": "Blutabnahme buchen",
+          "en": "Book a blood draw"
+        },
+        "resultTitle": {
+          "de": "Ihre Ergebnisse sind fertig",
+          "en": "Your results are ready"
+        },
+        "resultRows": {
+          "de": [
+            "Hämoglobin",
+            "Vitamin D",
+            "TSH"
+          ],
+          "en": [
+            "Hemoglobin",
+            "Vitamin D",
+            "TSH"
+          ]
+        },
+        "resultNorm": {
+          "de": "Normal",
+          "en": "Normal"
+        },
+        "resultTime": {
+          "de": "Fertig in 1 Std. 48 Min.",
+          "en": "Ready in 1 h 48 min"
+        }
+      }
+    },
+    "phone": "+49 123 456789",
+    "email": "hello@lumera-clinic.example",
+    "header": {
+      "hours": {
+        "de": "Täglich 08:00–21:00",
+        "en": "Daily 08:00–21:00"
+      },
+      "book": {
+        "de": "Termin buchen",
+        "en": "Book appointment"
+      }
+    },
+    "hero": {
+      "badge": {
+        "de": "Netzwerk medizinischer Zentren in Hamburg",
+        "en": "Network of medical centers in Hamburg"
+      },
+      "titleA": {
+        "de": "Ärzte, die Sie",
+        "en": "Doctors who"
+      },
+      "titleB": {
+        "de": "verstehen",
+        "en": "understand"
+      },
+      "titleC": {
+        "de": "",
+        "en": "you"
+      },
+      "subtitle": {
+        "de": "Allgemeinmedizin, Zahnmedizin, Frauengesundheit, Pädiatrie und Diagnostik unter einem Dach — mit Fachleuten, die Ihre Sprache sprechen und sich Zeit für Sie nehmen.",
+        "en": "Primary care, dentistry, women's health, pediatrics and diagnostics under one roof — with specialists who speak your language and take time to listen."
+      },
+      "ctaPrimary": {
+        "de": "Termin buchen",
+        "en": "Book appointment"
+      },
+      "ctaSecondary": {
+        "de": "Leistungskatalog",
+        "en": "Catalog of services"
+      },
+      "stats": [
+        {
+          "value": "11",
+          "label": {
+            "de": "Kliniken in Hamburg",
+            "en": "clinics in Hamburg"
+          }
+        },
+        {
+          "value": "2",
+          "label": {
+            "de": "Sprachen (EN · DE)",
+            "en": "languages (EN · DE)"
+          }
+        },
+        {
+          "value": "7/7",
+          "label": {
+            "de": "geöffnet",
+            "en": "working schedule"
+          }
+        }
+      ],
+      "pill": {
+        "value": ">70",
+        "text": {
+          "de": "Ärzte mit internationaler Erfahrung in 25 Fachbereichen",
+          "en": "Doctors with international experience in 25 fields"
+        }
+      },
+      "rating": {
+        "score": "4.9",
+        "reviews": {
+          "de": "2 400+ Bewertungen",
+          "en": "2 400+ reviews"
+        }
+      },
+      "promise": {
+        "title": {
+          "de": "Wir sprechen Ihre Sprache",
+          "en": "We speak your language"
+        },
+        "text": {
+          "de": "Englisch · Deutsch",
+          "en": "English · German"
+        }
+      },
+      "chief": {
+        "name": "Dr. Lena Hartmann",
+        "role": {
+          "de": "Chefärztin",
+          "en": "Chief physician"
+        },
+        "meta": {
+          "de": "Internistin · 18 Jahre Praxis",
+          "en": "Therapist · 18 years of practice"
+        },
+        "image": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=1000&q=80",
+        "available": {
+          "de": "Heute verfügbar",
+          "en": "Available today"
+        }
+      }
+    },
+    "checkup": {
+      "eyebrow": {
+        "de": "Check-up-Programme",
+        "en": "Check-up programs"
+      },
+      "title": {
+        "de": "Kennen Sie Ihre Gesundheit. Vorbeugen statt heilen.",
+        "en": "Know your health. Prevent, don't treat."
+      },
+      "subtitle": {
+        "de": "Fertige Programme von unseren Ärzten: bis zu 30 % günstiger als einzelne Untersuchungen.",
+        "en": "Ready-made programs designed by our doctors: save up to 30% compared with ordering each test separately."
+      },
+      "from": {
+        "de": "ab",
+        "en": "from"
+      },
+      "featured": {
+        "de": "Am beliebtesten",
+        "en": "Most popular"
+      },
+      "discount": {
+        "de": "-15 % Rabatt",
+        "en": "-15% discount"
+      },
+      "book": {
+        "de": "Termin buchen",
+        "en": "Book appointment"
+      },
+      "note": {
+        "de": "Preise sind Richtwerte. Der endgültige Preis wird bei der Anmeldung bestätigt.",
+        "en": "Prices are indicative. Final cost is confirmed at registration."
+      },
+      "currency": "€",
+      "plans": [
+        {
+          "id": "basic",
+          "name": {
+            "de": "Basis",
+            "en": "Basic"
+          },
+          "desc": {
+            "de": "Jährliche Vorsorge für gesunde Erwachsene.",
+            "en": "Annual preventive check for healthy adults."
+          },
+          "price": 149,
+          "featured": false,
+          "icon": "shieldcheck",
+          "features": {
+            "de": [
+              "Großes Blutbild",
+              "Glukose & Cholesterin",
+              "Leberwerte (ALT, AST)",
+              "Nierenfunktion (Kreatinin)",
+              "Urinstatus",
+              "Beratung beim Internisten"
+            ],
+            "en": [
+              "Complete blood count",
+              "Glucose & cholesterol",
+              "Liver tests (ALT, AST)",
+              "Kidney function (creatinine)",
+              "General urine analysis",
+              "Therapist consultation"
+            ]
+          },
+          "serviceId": "therapy"
+        },
+        {
+          "id": "extended",
+          "name": {
+            "de": "Erweitert 40+",
+            "en": "Extended 40+"
+          },
+          "desc": {
+            "de": "Vertiefte Untersuchung von Herz, Hormonen und Verdauung.",
+            "en": "Deeper screening of the heart, hormones and digestion."
+          },
+          "price": 299,
+          "oldPrice": 352,
+          "featured": true,
+          "icon": "heartpulse",
+          "features": {
+            "de": [
+              "Alles aus Basis",
+              "Hormonpanel (TSH, T3, T4)",
+              "Kardiologe + EKG",
+              "Ultraschall des Bauchraums",
+              "Vitamin D & B12",
+              "Tumormarker",
+              "Beratung beim Gastroenterologen"
+            ],
+            "en": [
+              "Everything in Basic",
+              "Hormone panel (TSH, T3, T4)",
+              "Cardiologist + ECG",
+              "Abdominal ultrasound",
+              "Vitamin D & B12",
+              "Tumor markers",
+              "Gastroenterologist consultation"
+            ]
+          },
+          "serviceId": "diagnostics"
+        },
+        {
+          "id": "womens",
+          "name": {
+            "de": "Frauengesundheit",
+            "en": "Women's health"
+          },
+          "desc": {
+            "de": "Umfassendes Programm für Frauen jeden Alters.",
+            "en": "Complete care program for women of any age."
+          },
+          "price": 229,
+          "featured": false,
+          "icon": "flower2",
+          "features": {
+            "de": [
+              "Beratung beim Gynäkologen",
+              "Ultraschall des Beckens",
+              "Zytologie (PAP-Abstrich)",
+              "Hormone (FSH, LH, Östradiol)",
+              "Brustultraschall",
+              "Eisen, Ferritin, Vitamine"
+            ],
+            "en": [
+              "Gynecologist consultation",
+              "Pelvic ultrasound",
+              "Cytology (PAP smear)",
+              "Hormones (FSH, LH, estradiol)",
+              "Breast ultrasound",
+              "Iron, ferritin, vitamins"
+            ]
+          },
+          "serviceId": "womens-health"
+        }
+      ]
+    },
+    "about": {
+      "eyebrow": {
+        "de": "Warum Lumera",
+        "en": "Why Lumera"
+      },
+      "title": {
+        "de": "Eine Klinik, die den Menschen in den Mittelpunkt stellt",
+        "en": "A clinic built around the person"
+      },
+      "subtitle": {
+        "de": "Wir verbinden europäische Medizinstandards mit der Wärme eines aufmerksamen Teams — damit jeder Besuch verständlich, angenehm und sicher ist.",
+        "en": "We combine European standards of medicine with the warmth of an attentive team — so that every visit feels clear, comfortable and safe."
+      },
+      "values": [
+        {
+          "icon": "award",
+          "title": {
+            "de": "Internationale Abschlüsse",
+            "en": "International diplomas"
+          },
+          "desc": {
+            "de": "Ärzte mit deutscher Ausbildung und Zertifizierung, die sich international ständig weiterbilden.",
+            "en": "Doctors trained and certified in Germany, with ongoing international education and training."
+          }
+        },
+        {
+          "icon": "languages",
+          "title": {
+            "de": "Mehrsprachige Betreuung",
+            "en": "Multilingual support"
+          },
+          "desc": {
+            "de": "Sprechstunden, Dokumente und Nachsorge auf Englisch und Deutsch.",
+            "en": "Appointments, documents and follow-ups in English and German."
+          }
+        },
+        {
+          "icon": "cpu",
+          "title": {
+            "de": "Moderne Ausstattung",
+            "en": "Modern equipment"
+          },
+          "desc": {
+            "de": "Digitale Diagnostik, eigenes Labor und Expertenultraschall in jeder Flaggschiff-Klinik.",
+            "en": "Digital diagnostics, in-house laboratory and expert-class ultrasound in every flagship clinic."
+          }
+        },
+        {
+          "icon": "handshake",
+          "title": {
+            "de": "Individuelle Betreuung",
+            "en": "Individual approach"
+          },
+          "desc": {
+            "de": "Ohne Zeitdruck, mit persönlichem Behandlungsplan und einem Koordinator, der Sie bis zum Ergebnis begleitet.",
+            "en": "Unhurried visits, personal treatment plans and a coordinator who stays with you to the end."
+          }
+        }
+      ],
+      "stats": [
+        {
+          "value": 11,
+          "suffix": "",
+          "label": {
+            "de": "Standorte in Hamburg",
+            "en": "branches in Hamburg"
+          }
+        },
+        {
+          "value": 100,
+          "suffix": "K+",
+          "label": {
+            "de": "Patienten pro Jahr",
+            "en": "patients per year"
+          }
+        },
+        {
+          "value": 50,
+          "suffix": "+",
+          "label": {
+            "de": "Diagnostikarten",
+            "en": "types of diagnostics"
+          }
+        },
+        {
+          "value": 70,
+          "suffix": "+",
+          "label": {
+            "de": "Fachärzte",
+            "en": "specialists"
+          }
+        }
+      ]
+    },
+    "doctors": {
+      "eyebrow": {
+        "de": "Unser Team",
+        "en": "Our team"
+      },
+      "title": {
+        "de": "Lernen Sie Ärzte kennen, denen Sie vertrauen können",
+        "en": "Meet the doctors you can trust"
+      },
+      "subtitle": {
+        "de": "Erfahrene Fachärzte mit internationaler Praxis, bewertet von tausenden Patienten.",
+        "en": "Experienced specialists with international practice, rated by thousands of patients."
+      },
+      "book": {
+        "de": "Buchen",
+        "en": "Book"
+      },
+      "experience": {
+        "de": "Jahre Erfahrung",
+        "en": "yrs experience"
+      },
+      "items": [
+        {
+          "id": "hartmann",
+          "name": "Dr. Lena Hartmann",
+          "specialty": {
+            "de": "Internistin",
+            "en": "Therapist"
+          },
+          "rating": 4.9,
+          "years": 18,
+          "image": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=1000&q=80",
+          "serviceId": "therapy"
+        },
+        {
+          "id": "mehta",
+          "name": "Dr. Arjun Mehta",
+          "specialty": {
+            "de": "Gastroenterologe",
+            "en": "Gastroenterologist"
+          },
+          "rating": 4.9,
+          "years": 14,
+          "image": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&crop=faces&w=1000&q=80",
+          "serviceId": "diagnostics"
+        },
+        {
+          "id": "moretti",
+          "name": "Dr. Leila Moretti",
+          "specialty": {
+            "de": "Gynäkologin",
+            "en": "Gynecologist"
+          },
+          "rating": 5,
+          "years": 16,
+          "image": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&crop=faces&w=1000&q=80",
+          "serviceId": "womens-health"
+        },
+        {
+          "id": "costa",
+          "name": "Dr. Daniel Costa",
+          "specialty": {
+            "de": "Zahnarzt",
+            "en": "Dentist"
+          },
+          "rating": 4.8,
+          "years": 11,
+          "image": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=1000&q=80",
+          "serviceId": "dentistry"
+        },
+        {
+          "id": "okafor",
+          "name": "Dr. Naomi Okafor",
+          "specialty": {
+            "de": "Kinderärztin",
+            "en": "Pediatrician"
+          },
+          "rating": 4.9,
+          "years": 12,
+          "image": "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&crop=faces&w=1000&q=80",
+          "serviceId": "pediatrics"
+        },
+        {
+          "id": "varga",
+          "name": "Dr. Tomas Varga",
+          "specialty": {
+            "de": "Kardiologe",
+            "en": "Cardiologist"
+          },
+          "rating": 4.8,
+          "years": 20,
+          "image": "https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&crop=faces&w=1000&q=80",
+          "serviceId": "diagnostics"
+        }
+      ]
+    },
+    "locations": {
+      "eyebrow": {
+        "de": "Standorte",
+        "en": "Locations"
+      },
+      "title": {
+        "de": "11 Kliniken in ganz Hamburg",
+        "en": "11 clinics across Hamburg"
+      },
+      "subtitle": {
+        "de": "Wählen Sie den passenden Standort — jeder liegt nur wenige Minuten von öffentlichen Verkehrsmitteln entfernt.",
+        "en": "Choose the most convenient branch — every one is a short walk from public transport."
+      },
+      "open": {
+        "de": "Heute geöffnet",
+        "en": "Open today"
+      },
+      "hours": {
+        "de": "Mo–So 08:00–21:00",
+        "en": "Mon–Sun 08:00–21:00"
+      },
+      "directions": {
+        "de": "Route planen",
+        "en": "Get directions"
+      },
+      "book": {
+        "de": "An diesem Standort buchen",
+        "en": "Book at this branch"
+      },
+      "more": {
+        "de": "+ 5 weitere Standorte — vollständige Liste bei der Anmeldung",
+        "en": "+ 5 more branches — see the full list at registration"
+      },
+      "offers": {
+        "de": "Hier verfügbar",
+        "en": "Available here"
+      },
+      "items": [
+        {
+          "id": "mitte",
+          "name": "Hamburg-Mitte",
+          "address": "Lumerastraße 12, 20095 Hamburg",
+          "phone": "+49 123 456789",
+          "x": 48,
+          "y": 42,
+          "serviceIds": [
+            "therapy",
+            "dentistry",
+            "womens-health",
+            "pediatrics",
+            "diagnostics",
+            "psychiatry"
+          ]
+        },
+        {
+          "id": "eimsbuettel",
+          "name": "Eimsbüttel",
+          "address": "Sonnenallee 45, 20259 Hamburg",
+          "phone": "+49 123 456790",
+          "x": 46,
+          "y": 66,
+          "serviceIds": [
+            "therapy",
+            "dentistry",
+            "womens-health",
+            "diagnostics"
+          ]
+        },
+        {
+          "id": "altona",
+          "name": "Altona",
+          "address": "Gartenweg 28, 22765 Hamburg",
+          "phone": "+49 123 456791",
+          "x": 28,
+          "y": 44,
+          "serviceIds": [
+            "therapy",
+            "womens-health",
+            "pediatrics",
+            "diagnostics"
+          ]
+        },
+        {
+          "id": "wandsbek",
+          "name": "Wandsbek",
+          "address": "Lindenhof 22, 22041 Hamburg",
+          "phone": "+49 123 456792",
+          "x": 68,
+          "y": 54,
+          "serviceIds": [
+            "therapy",
+            "dentistry",
+            "pediatrics",
+            "diagnostics"
+          ]
+        },
+        {
+          "id": "harburg",
+          "name": "Harburg",
+          "address": "Frühlingsstraße 36, 21073 Hamburg",
+          "phone": "+49 123 456793",
+          "x": 40,
+          "y": 86,
+          "serviceIds": [
+            "therapy",
+            "dentistry",
+            "womens-health",
+            "pediatrics",
+            "psychiatry"
+          ]
+        },
+        {
+          "id": "winterhude",
+          "name": "Winterhude",
+          "address": "Kastanienallee 207, 22303 Hamburg",
+          "phone": "+49 123 456794",
+          "x": 42,
+          "y": 16,
+          "serviceIds": [
+            "therapy",
+            "womens-health",
+            "diagnostics",
+            "psychiatry"
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "about": {
+        "de": "Ein Netzwerk moderner medizinischer Zentren in Hamburg. Ärzte, die Ihre Sprache sprechen und für das Ergebnis einstehen.",
+        "en": "A network of modern medical centers in Hamburg. Doctors who speak your language and care about the result."
+      },
+      "legal": {
+        "de": "Die Informationen auf dieser Website dienen nur der Orientierung und ersetzen keine Beratung durch einen qualifizierten Arzt. Es bestehen Gegenanzeigen — bitte konsultieren Sie einen Facharzt.",
+        "en": "Information on this website is for reference only and does not replace consultation with a qualified doctor. Contraindications exist — consult a specialist."
+      },
+      "emergency": {
+        "de": "Notruf: 112",
+        "en": "Emergency: 112"
+      },
+      "hours": {
+        "de": [
+          "Mo–Fr: 08:00–21:00",
+          "Samstag: 09:00–20:00",
+          "Sonntag: 09:00–18:00"
+        ],
+        "en": [
+          "Mon–Fri: 08:00–21:00",
+          "Saturday: 09:00–20:00",
+          "Sunday: 09:00–18:00"
+        ]
+      },
+      "rights": {
+        "de": "Alle Rechte vorbehalten.",
+        "en": "All rights reserved."
+      },
+      "privacy": {
+        "de": "Datenschutzerklärung",
+        "en": "Privacy policy"
+      },
+      "terms": {
+        "de": "Nutzungsbedingungen",
+        "en": "Terms of service"
+      },
+      "cookies": {
+        "de": "Cookies",
+        "en": "Cookies"
+      }
+    },
+    "demo": true,
+    "faq": {
+      "title": {
+        "en": "Questions, answered",
+        "de": "Ihre Fragen, beantwortet"
+      },
+      "subtitle": {
+        "en": "Everything you need to know before your first visit.",
+        "de": "Alles Wichtige vor Ihrem ersten Besuch."
+      },
+      "items": [
+        {
+          "question": {
+            "en": "Do I need an appointment?",
+            "de": "Brauche ich einen Termin?"
+          },
+          "answer": {
+            "en": "Yes, but we offer same-day slots for urgent cases. Book online or call us.",
+            "de": "Ja, für dringende Fälle bieten wir aber Termine am selben Tag an. Buchen Sie online oder rufen Sie uns an."
+          }
+        },
+        {
+          "question": {
+            "en": "Do you accept public and private insurance?",
+            "de": "Akzeptieren Sie gesetzliche und private Versicherungen?"
+          },
+          "answer": {
+            "en": "We treat both statutory and private patients.",
+            "de": "Wir behandeln gesetzlich und privat Versicherte."
+          }
+        },
+        {
+          "question": {
+            "en": "Which languages do you speak?",
+            "de": "Welche Sprachen sprechen Sie?"
+          },
+          "answer": {
+            "en": "Our team speaks German and English.",
+            "de": "Unser Team spricht Deutsch und Englisch."
+          }
+        }
+      ]
+    }
+  },
+  "theme_config": {
+    "theme": "medical",
+    "template": "clinic-premium"
+  }
+}

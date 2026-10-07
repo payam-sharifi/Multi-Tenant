@@ -1,0 +1,20 @@
+{
+  "site_data": {
+    "business_name": "Praxis Dr. Weber",
+    "phone": "+49 40 5550 123",
+    "address": "Musterstraße 5, 20095 Hamburg",
+    "sections": [
+      { "type": "hero", "title": "Zahnmedizin mit Ruhe und Präzision", "subtitle": "Moderne Behandlung in entspannter Atmosphäre.", "cta_button": "Termin buchen" },
+      { "type": "services", "items": [
+        { "name": "Professionelle Zahnreinigung", "price": "89 €", "description": "Gründliche Reinigung und Politur." },
+        { "name": "Bleaching", "price": "299 €", "description": "Sichtbar hellere Zähne." }
+      ] },
+      { "type": "working_hours", "text": "Mo–Fr 08:00–17:00" },
+      { "type": "faq", "items": [
+        { "question": "Brauche ich einen Termin?", "answer": "Ja, bitte vereinbaren Sie vorab einen Termin." }
+      ] },
+      { "type": "doctors", "enabled": false, "items": [{ "name": "Dr. Weber" }] }
+    ]
+  },
+  "theme_config": { "theme": "clinic-premium", "active": true }
+}

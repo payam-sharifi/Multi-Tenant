@@ -1,3 +1,5 @@
+import type { ClinicPremiumContent } from '@/lib/types/clinic-premium';
+
 export const BUSINESS_TYPES = [
   'medical',
   'salon',
@@ -26,11 +28,44 @@ export type SiteHero = {
 };
 
 export type SiteService = {
+  id?: string;
   title: string;
   description: string;
   price?: string;
   duration?: string;
   icon?: string;
+  /** Only https URLs from allowed hosts survive parsing (see lib/image-hosts.ts). */
+  image?: string;
+  tags?: string[];
+  /** false hides the "Book" button for this service. */
+  bookable?: boolean;
+};
+
+/** Optional "express analyses" style banner shown under the services (clinic-premium). */
+export type SiteServicesExpress = {
+  enabled: boolean;
+  /** id of the service pre-selected in the booking form. */
+  serviceId?: string;
+  badge?: string;
+  title?: string;
+  desc?: string;
+  tags?: string[];
+  highlights?: string[];
+  cta?: string;
+  resultTitle?: string;
+  resultRows?: string[];
+  resultNorm?: string;
+  resultTime?: string;
+};
+
+/** Texts around the services list (section header, labels, banner). */
+export type SiteServicesBlock = {
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  bookLabel?: string;
+  fromLabel?: string;
+  express?: SiteServicesExpress;
 };
 
 export type MenuItem = {
@@ -71,6 +106,11 @@ export type SiteConfig = {
   branding: SiteBranding;
   hero: SiteHero;
   services: SiteService[];
+  servicesBlock?: SiteServicesBlock;
+  /** Optional design variant of the business type, from theme_config.template. */
+  templateId?: string;
+  /** Parsed content for the clinic-premium template (only set for that template). */
+  clinic?: ClinicPremiumContent;
   menu: MenuCategory[];
   booking: BookingConfig;
   gallery: GalleryItem[];
