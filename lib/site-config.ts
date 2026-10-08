@@ -8,7 +8,11 @@ import {
   type MenuCategory,
   type SiteConfig,
   type SiteService,
+  type SiteServicesBlock,
+  type SiteServicesExpress,
 } from '@/lib/types/template';
+import { safeImageUrl } from '@/lib/image-hosts';
+import { buildClinicPremiumContent } from '@/lib/clinic-premium';
 
 export const DEFAULT_COLORS: Record<
   BusinessType,
@@ -24,6 +28,8 @@ export const DEFAULT_COLORS: Record<
 const ALIASES: Record<string, BusinessType> = {
   medical: 'medical',
   clinic: 'medical',
+  clinicpremium: 'medical',
+  lumera: 'medical',
   clinical: 'medical',
   doctor: 'medical',
   praxis: 'medical',
@@ -138,6 +144,20 @@ function aliasOf(value: unknown): BusinessType | null {
   return ALIASES[key] || ALIASES[compact] || null;
 }
 
+const CLINIC_PREMIUM_NAMES = new Set(['clinic-premium', 'clinic_premium', 'clinicpremium', 'lumera']);
+
+/**
+ * Design variant of the business type. Set either with theme_config.template = "clinic-premium"
+ * or, because the Hermes agent only writes theme_config.theme (free string), with theme = "clinic-premium".
+ */
+function resolveTemplateId(theme: Record<string, unknown>, raw: Record<string, unknown>): string | undefined {
+  const explicit = firstString(theme.template, theme.templateId, theme.template_id).toLowerCase();
+  if (CLINIC_PREMIUM_NAMES.has(explicit)) return 'clinic-premium';
+  if (explicit) return explicit;
+  const named = [theme.theme, raw.theme, raw.template].map((value) => str(value).toLowerCase());
+  return named.some((value) => CLINIC_PREMIUM_NAMES.has(value)) ? 'clinic-premium' : undefined;
+}
+
 export function resolveThemeConfigType(themeConfig: unknown): BusinessType | null {
   if (themeConfig == null || themeConfig === '') return null;
   if (typeof themeConfig === 'string') return aliasOf(themeConfig);
@@ -219,26 +239,83 @@ function defaultMenu(dict: Dictionary): MenuCategory[] {
   }));
 }
 
+function stringList(value: unknown): string[] {
+  if (Array.isArray(value)) return value.map(str).filter(Boolean);
+  const text = str(value);
+  return text ? text.split(',').map((part) => part.trim()).filter(Boolean) : [];
+}
+
 function mapServices(raw: Record<string, unknown>, dict: Dictionary): SiteService[] {
   const section = findSection(raw, ['services', 'service']);
   const fromSection = listOf(section);
   const source = fromSection.length ? fromSection : listOf(raw.services);
-  const items: SiteService[] = [];
-  for (const entry of source) {
+  const items: { service: SiteService; order: number; index: number }[] = [];
+  source.forEach((entry, index) => {
     const item = unwrap(entry);
+    if (item.active === false || item.enabled === false) return;
     const title = firstString(item.title, item.name, item.label);
     const price = firstString(item.price, item.cost);
-    if (!title && !price) continue;
+    if (!title && !price) return;
+    const tags = stringList(item.tags);
+    const order = typeof item.order === 'number' ? item.order : Number.POSITIVE_INFINITY;
     items.push({
-      title,
-      description: firstString(item.description, item.subtitle, item.text),
-      price: price || dict.templates.priceOnRequest,
-      duration: firstString(item.duration, item.time, item.dauer) || undefined,
-      icon: firstString(item.icon) || undefined,
+      index,
+      order,
+      service: {
+        id: firstString(item.id, item.slug, item.key) || undefined,
+        title,
+        description: firstString(item.description, item.desc, item.subtitle, item.text),
+        price: price || dict.templates.priceOnRequest,
+        duration: firstString(item.duration, item.time, item.dauer) || undefined,
+        icon: firstString(item.icon) || undefined,
+        image: safeImageUrl(firstString(item.image, item.image_url, item.photo)),
+        tags: tags.length ? tags : undefined,
+        bookable: item.bookable === false ? false : undefined,
+      },
     });
-  }
+  });
 
-  return items;
+  return items
+    .sort((a, b) => (a.order === b.order ? a.index - b.index : a.order - b.order))
+    .map((entry) => entry.service);
+}
+
+function mapServicesExpress(value: unknown): SiteServicesExpress | undefined {
+  const raw = asRecord(value);
+  if (!raw) return undefined;
+  const optional = (v: unknown) => firstString(v) || undefined;
+  const list = (v: unknown) => {
+    const parsed = stringList(v);
+    return parsed.length ? parsed : undefined;
+  };
+  return {
+    enabled: raw.enabled !== false,
+    serviceId: optional(raw.serviceId ?? raw.service_id),
+    badge: optional(raw.badge),
+    title: optional(raw.title),
+    desc: optional(raw.desc ?? raw.description),
+    tags: list(raw.tags),
+    highlights: list(raw.highlights),
+    cta: optional(raw.cta),
+    resultTitle: optional(raw.resultTitle),
+    resultRows: list(raw.resultRows),
+    resultNorm: optional(raw.resultNorm),
+    resultTime: optional(raw.resultTime),
+  };
+}
+
+function mapServicesBlock(raw: Record<string, unknown>): SiteServicesBlock | undefined {
+  const section = { ...unwrap(raw.services), ...unwrap(findSection(raw, ['services', 'service'])) };
+  const optional = (...values: unknown[]) => firstString(...values) || undefined;
+  const block: SiteServicesBlock = {
+    eyebrow: optional(section.eyebrow),
+    title: optional(section.title, section.heading),
+    subtitle: optional(section.subtitle, section.description),
+    bookLabel: optional(section.bookLabel, section.book_label),
+    fromLabel: optional(section.fromLabel, section.from_label),
+    express: mapServicesExpress(section.express),
+  };
+  return Object.values(block).some((value) => value !== undefined) ? block : undefined;
 }
 
 function mapMenu(raw: Record<string, unknown>, services: SiteService[], dict: Dictionary): MenuCategory[] {
@@ -447,6 +524,8 @@ export function buildSiteConfig(
   );
 
   const services = mapServices(raw, dict);
+  const servicesBlock = mapServicesBlock(raw);
+  const templateId = resolveTemplateId(theme, raw);
   const resolvedServices = services.length ? services : defaultServices(businessType, dict);
   const menu = mapMenu(raw, services, dict);
   const resolvedMenu = menu.length ? menu : businessType === 'restaurant' ? defaultMenu(dict) : menu;
@@ -479,6 +558,12 @@ export function buildSiteConfig(
 
   return {
     businessType,
+    templateId,
+    servicesBlock,
+    clinic:
+      templateId === 'clinic-premium'
+        ? buildClinicPremiumContent(raw, services, servicesBlock)
+        : undefined,
     branding: {
       name,
       logo: firstString(theme.logo, themeBranding.logo, brandingRaw.logo, raw.logo, raw.logo_url) || undefined,

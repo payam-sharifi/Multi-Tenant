@@ -6,6 +6,9 @@ import { getDictionary } from '@/lib/i18n/get-dictionary';
 import { isLocale, type Locale } from '@/lib/i18n/config';
 import { getLocalizedSiteData } from '@/lib/i18n/localize';
 import { resolveSiteIcon } from '@/lib/site-icon';
+import clinicPremiumFixture from '@/fixtures/clinic-premium.json';
+import clinicHermesFixture from '@/fixtures/clinic-hermes-minimal.json';
+import clinicHermesFullFixture from '@/fixtures/clinic-hermes-full.json';
 import { buildSiteConfig, isBusinessType } from '@/lib/site-config';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import TemplateRenderer from '@/components/TemplateRenderer';
@@ -70,8 +73,18 @@ export default async function DynamicWebsitePage({
 
   const locale = lang;
   const dict = getDictionary(locale);
-  const website = await getWebsiteData(subdomain);
   const query = await searchParams;
+  const devFixture =
+    process.env.NODE_ENV !== 'production'
+      ? query.fixture === 'clinic-premium'
+        ? clinicPremiumFixture
+        : query.fixture === 'clinic-hermes-minimal'
+          ? clinicHermesFixture
+          : query.fixture === 'clinic-hermes-full'
+            ? clinicHermesFullFixture
+            : null
+      : null;
+  const website = devFixture ?? (await getWebsiteData(subdomain));
   const preview = typeof query.template === 'string' ? query.template : '';
 
   if (!website?.site_data) {
@@ -93,9 +106,11 @@ export default async function DynamicWebsitePage({
 
   const localized = getLocalizedSiteData(website.site_data, locale);
   const themeConfig =
-    process.env.NODE_ENV !== 'production' && isBusinessType(preview)
-      ? { theme: preview }
-      : website.theme_config;
+    process.env.NODE_ENV !== 'production' && preview === 'clinic-premium'
+      ? { theme: 'medical', template: 'clinic-premium' }
+      : process.env.NODE_ENV !== 'production' && isBusinessType(preview)
+        ? { theme: preview }
+        : website.theme_config;
   const config = buildSiteConfig(localized, dict, locale, themeConfig);
 
   return <TemplateRenderer data={config} dict={dict} locale={locale} />;

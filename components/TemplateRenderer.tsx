@@ -1,3 +1,4 @@
+import ClinicPremiumTemplate from '@/components/templates/clinic-premium/ClinicPremiumTemplate';
 import GeneralTemplate from '@/components/templates/GeneralTemplate';
 import MedicalTemplate from '@/components/templates/MedicalTemplate';
 import RestaurantTemplate from '@/components/templates/RestaurantTemplate';
@@ -18,6 +19,9 @@ export default function TemplateRenderer({
 }) {
   switch (data.businessType) {
     case 'medical':
+      if (data.templateId === 'clinic-premium') {
+        return <ClinicPremiumTemplate data={data} dict={dict} locale={locale} />;
+      }
       return <MedicalTemplate data={data} dict={dict} locale={locale} />;
     case 'salon':
       return <SalonTemplate data={data} dict={dict} locale={locale} />;

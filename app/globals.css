@@ -22,3 +22,163 @@ body {
 .font-display {
   font-family: var(--font-display), ui-serif, Georgia, serif;
 }
+
+/* ------------------------------------------------------------------ */
+/* clinic-premium template (components/templates/clinic-premium)       */
+/* Tokens are only referenced by that template; base rules are scoped  */
+/* to [data-template="clinic-premium"] so other templates are untouched.*/
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-brand-50: #eef6f4;
+  --color-brand-100: #d9eae6;
+  --color-brand-200: #b3d5cd;
+  --color-brand-300: #86b9ae;
+  --color-brand-400: #4e9487;
+  --color-brand-500: #1f6e62;
+  --color-brand-600: #0f5a50;
+  --color-brand-700: #0c4a42;
+  --color-brand-800: #0a3f38;
+  --color-brand-900: #0a3832;
+  --color-brand-950: #06231f;
+  --color-mint: #20e298;
+  --color-mint-soft: #d5f8e8;
+  --color-mint-dark: #12b87a;
+  --color-sage: #cfe3d8;
+  --color-sage-soft: #e6f0ea;
+  --color-gold: #f59e0b;
+  --color-surface: #f3f6f5;
+  --color-surface-alt: #f8fafc;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+
+  --shadow-soft: 0 10px 40px -12px rgba(10, 56, 50, 0.15);
+  --shadow-card: 0 2px 4px rgba(10, 56, 50, 0.04), 0 12px 32px -8px rgba(10, 56, 50, 0.1);
+  --shadow-glow: 0 8px 30px -4px rgba(32, 226, 152, 0.55);
+
+  --animate-ping2: ping2 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-floaty: floaty 6s ease-in-out infinite;
+  @keyframes ping2 {
+    75%,
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+  @keyframes floaty {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+}
+
+html:has([data-template="clinic-premium"]) {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+[data-template="clinic-premium"] {
+  background: var(--color-surface-alt);
+  color: var(--color-ink);
+  font-feature-settings: "cv11", "ss01";
+
+  ::selection {
+    background: #20e298;
+    color: #0a3832;
+  }
+  a[href],
+  button:not(:disabled),
+  [role="button"],
+  [role="tab"],
+  select,
+  summary,
+  input[type="date"],
+  input[type="checkbox"],
+  input[type="radio"],
+  label[for] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  :focus-visible {
+    outline: 2px solid #20e298;
+    outline-offset: 2px;
+  }
+}
+
+@utility container-x {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-7xl);
+  padding-inline: --spacing(4);
+  @variant sm {
+    padding-inline: --spacing(6);
+  }
+  @variant lg {
+    padding-inline: --spacing(8);
+  }
+}
+
+@utility section-y {
+  padding-block: --spacing(20);
+  @variant sm {
+    padding-block: --spacing(28);
+  }
+}
+
+@utility pill {
+  display: inline-flex;
+  align-items: center;
+  gap: --spacing(2);
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--color-brand-700) 10%, transparent);
+  background: #fff;
+  padding: --spacing(1.5) --spacing(3.5);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-brand-700);
+  box-shadow: var(--shadow-sm);
+}
+
+@utility heading-xl {
+  font-size: var(--text-4xl);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-brand-900);
+  @variant sm {
+    font-size: var(--text-5xl);
+  }
+  @variant lg {
+    font-size: var(--text-6xl);
+  }
+}
+
+@utility heading-lg {
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+  font-weight: 800;
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-brand-900);
+  @variant sm {
+    font-size: var(--text-4xl);
+  }
+  @variant lg {
+    font-size: var(--text-5xl);
+  }
+}
+
+@utility grid-pattern {
+  background-image:
+    linear-gradient(to right, rgba(10, 56, 50, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10, 56, 50, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}

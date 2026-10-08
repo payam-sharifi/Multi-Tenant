@@ -1,0 +1,60 @@
+import {
+  Activity,
+  Award,
+  Baby,
+  Bone,
+  Brain,
+  Cpu,
+  Ear,
+  Eye,
+  Flower2,
+  Heart,
+  HeartHandshake,
+  HeartPulse,
+  Hospital,
+  Languages,
+  Microscope,
+  Pill,
+  Scan,
+  ShieldCheck,
+  Smile,
+  Sparkles,
+  Stethoscope,
+  Syringe,
+  Thermometer,
+  type LucideIcon,
+} from "lucide-react";
+
+/** Whitelist: the backend sends an icon *name*, never arbitrary code. */
+export const iconRegistry: Record<string, LucideIcon> = {
+  activity: Activity,
+  award: Award,
+  baby: Baby,
+  bone: Bone,
+  brain: Brain,
+  cpu: Cpu,
+  ear: Ear,
+  eye: Eye,
+  flower: Flower2,
+  flower2: Flower2,
+  heart: Heart,
+  handshake: HeartHandshake,
+  hearthandshake: HeartHandshake,
+  heartpulse: HeartPulse,
+  hospital: Hospital,
+  languages: Languages,
+  microscope: Microscope,
+  pill: Pill,
+  scan: Scan,
+  shieldcheck: ShieldCheck,
+  smile: Smile,
+  sparkles: Sparkles,
+  stethoscope: Stethoscope,
+  syringe: Syringe,
+  thermometer: Thermometer,
+};
+
+export function resolveIcon(name?: string): LucideIcon {
+  const key = (name ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  return iconRegistry[key] ?? Stethoscope;
+}

@@ -1,0 +1,134 @@
+{
+  "site_data": {
+    "business_name": "Praxis Dr. Weber",
+    "sections": [
+      {
+        "type": "hero",
+        "title": "Praxis Dr. Weber"
+      },
+      {
+        "type": "doctors",
+        "title": {
+          "de": "Unser Team",
+          "en": "Our team"
+        },
+        "items": [
+          {
+            "name": "Dr. Anna Weber",
+            "specialty": {
+              "de": "Zahnärztin",
+              "en": "Dentist"
+            },
+            "years": 12
+          }
+        ]
+      },
+      {
+        "type": "locations",
+        "items": [
+          {
+            "name": "Hauptpraxis",
+            "address": "Musterstr. 5, Hamburg",
+            "hours": "Mo-Fr 8-17"
+          }
+        ]
+      },
+      {
+        "type": "faq",
+        "items": [
+          {
+            "question": "Termin nötig?",
+            "answer": "Ja."
+          },
+          {
+            "question": {
+              "de": "Kasse?",
+              "en": "Insurance?"
+            },
+            "answer": {
+              "de": "Ja",
+              "en": "Yes"
+            }
+          }
+        ]
+      },
+      {
+        "type": "services",
+        "items": [
+          {
+            "name": "Zahnreinigung",
+            "description": {
+              "de": "Gründlich",
+              "en": "Thorough"
+            },
+            "price": "89 €",
+            "icon": "sparkles"
+          },
+          {
+            "name": "Bleaching",
+            "price": "299 €"
+          }
+        ]
+      },
+      {
+        "type": "about",
+        "values": [
+          {
+            "title": {
+              "de": "Moderne Technik",
+              "en": "Modern tech"
+            },
+            "desc": "x",
+            "icon": "cpu"
+          }
+        ],
+        "stats": [
+          {
+            "value": 15,
+            "label": "Jahre",
+            "suffix": "+"
+          }
+        ]
+      },
+      {
+        "type": "checkup",
+        "title": {
+          "de": "Check-up Pakete",
+          "en": "Check-up packages"
+        },
+        "discount": "-15%",
+        "plans": [
+          {
+            "name": "Basis",
+            "price": 89,
+            "desc": {
+              "de": "Der Einstieg",
+              "en": "The start"
+            },
+            "features": [
+              "Blutbild",
+              "EKG"
+            ]
+          },
+          {
+            "name": "Premium",
+            "price": 249,
+            "oldPrice": 299,
+            "features": [
+              "MRT",
+              "Ultraschall"
+            ],
+            "featured": true
+          }
+        ]
+      }
+    ],
+    "theme": "clinic-premium",
+    "phone": "+49 40 5550 123",
+    "address": "Musterstr. 5, Hamburg"
+  },
+  "theme_config": {
+    "active": true,
+    "theme": "clinic-premium"
+  }
+}
