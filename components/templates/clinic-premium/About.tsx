@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { sectionIds } from "@/components/templates/clinic-premium/data";
 import { resolveIcon } from "@/components/templates/clinic-premium/icons";
 import { useI18n } from "@/components/templates/clinic-premium/i18n";
@@ -16,8 +17,20 @@ export function About() {
       <div className="container-x">
         <SectionHeading eyebrow={t.about.eyebrow} title={t.about.title} subtitle={t.about.subtitle} />
 
+        {t.about.image && (
+          <Reveal className="relative mt-14 aspect-[16/8] overflow-hidden rounded-[2rem] bg-sage shadow-soft ring-1 ring-brand-900/10">
+            <Image
+              src={t.about.image}
+              alt={t.about.title}
+              fill
+              sizes="(min-width: 1280px) 1200px, 100vw"
+              className="object-cover"
+            />
+          </Reveal>
+        )}
+
         {t.about.values.length > 0 && (
-        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className={`${t.about.image ? "mt-10" : "mt-14"} grid gap-5 sm:grid-cols-2 lg:grid-cols-4`}>
           {t.about.values.map((v, i) => {
             const Icon = resolveIcon(v.icon);
             return (

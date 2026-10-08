@@ -182,6 +182,7 @@ function parseAbout(section: Rec): ClinicAboutContent {
     eyebrow: first(section.eyebrow),
     title: first(section.title),
     subtitle: first(section.subtitle),
+    image: image(section.image ?? section.photo),
     values,
     stats,
   };
@@ -218,6 +219,7 @@ function parseLocations(section: Rec): ClinicLocationsContent {
     x: num(item.x),
     y: num(item.y),
     serviceIds: strings(item.serviceIds ?? item.service_ids),
+    image: image(item.image ?? item.photo),
   }));
 
   return {
@@ -302,6 +304,7 @@ export function buildClinicPremiumContent(
     },
     sample: raw.demo === true,
     header: header ? { hours: first(header.hours), book: first(header.book) } : undefined,
+    logo: image(first(raw.logo, raw.logo_url, brandingRaw.logo, rec(raw.theme)?.logo)),
     contact: {
       phone: first(footer?.phone, contactRaw.phone, raw.phone, raw.contact_phone, brandingRaw.phone),
       email: first(footer?.email, contactRaw.email, raw.email, raw.contact_email, brandingRaw.email),
