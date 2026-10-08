@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Clock, MapPin, Navigation, Phone } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { useBooking } from "@/components/templates/clinic-premium/booking";
 import { sectionIds } from "@/components/templates/clinic-premium/data";
@@ -92,6 +93,17 @@ export function Locations() {
                   transition={{ duration: 0.3, ease }}
                   className="relative border-t border-brand-900/10 bg-white p-6 sm:p-8"
                 >
+                  {active.image && (
+                    <div className="relative -mx-6 -mt-6 mb-6 aspect-[16/6] overflow-hidden bg-sage sm:-mx-8 sm:-mt-8 sm:mb-8">
+                      <Image
+                        src={active.image}
+                        alt={active.name}
+                        fill
+                        sizes="(min-width: 1024px) 700px, 100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
                       {t.locations.open && (

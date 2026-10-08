@@ -63,6 +63,7 @@ export type ClinicBranchView = {
   x: number;
   y: number;
   services: number[];
+  image: string;
 };
 
 type B = Dict;
@@ -72,6 +73,8 @@ export type ClinicDict = Omit<B, "services" | "hero" | "checkup" | "about" | "do
   sample: boolean;
   /** Which sections to render: present in the JSON AND complete enough to look right. */
   sections: ClinicPremiumContent["present"];
+  /** Customer logo URL, "" when none */
+  logo: string;
   contact: { phone: string; phoneHref: string; email: string; address?: string; hours?: string };
   hero: B["hero"] & {
     ratingScore: string;
@@ -86,7 +89,10 @@ export type ClinicDict = Omit<B, "services" | "hero" | "checkup" | "about" | "do
     express: B["services"]["express"] & { enabled: boolean; serviceId?: string };
   };
   checkup: Omit<B["checkup"], "plans"> & { currency: string; plans: ClinicPlanView[] };
-  about: Omit<B["about"], "values"> & { values: { title: string; desc: string; icon: string }[] };
+  about: Omit<B["about"], "values"> & {
+    image: string;
+    values: { title: string; desc: string; icon: string }[];
+  };
   doctors: Omit<B["doctors"], "specs"> & { items: ClinicDoctorView[] };
   locations: B["locations"] & { items: ClinicBranchView[] };
 };
@@ -284,6 +290,7 @@ export function buildClinicDict(rawBase: Dict, content: ClinicPremiumContent, lo
           phone,
           phoneHref: phone ? telHref(phone) : "",
           hours: p?.hours ?? lj?.hours ?? content.contact?.hours ?? (sample ? base.locations.hours : ""),
+          image: p?.image ?? "",
           x: p?.x ?? pin.x,
           y: p?.y ?? pin.y,
           services: fromIds?.length
@@ -316,6 +323,7 @@ export function buildClinicDict(rawBase: Dict, content: ClinicPremiumContent, lo
     ...base,
     sample,
     sections,
+    logo: content.logo ?? "",
     contact: { phone, phoneHref: phone ? telHref(phone) : "", email, address: content.contact?.address, hours: content.contact?.hours },
     header: {
       ...base.header,
@@ -341,7 +349,11 @@ export function buildClinicDict(rawBase: Dict, content: ClinicPremiumContent, lo
       chiefRole: fallback(hj?.chiefRole, base.hero.chiefRole, ""),
       chiefName: fallback(hj?.chiefName, lead?.name ?? base.hero.chiefName, lead?.name ?? ""),
       chiefMeta: fallback(hj?.chiefMeta, lead ? lead.spec : base.hero.chiefMeta, lead ? lead.spec : ""),
-      chiefImage: fallback(hj?.chiefImage, lead?.image || defaultDoctors[0].image, lead?.image ?? ""),
+      // An explicit hero picture beats the lead doctor's portrait.
+      chiefImage:
+        hj?.image && !hj.chiefImage
+          ? ""
+          : fallback(hj?.chiefImage, lead?.image || defaultDoctors[0].image, lead?.image ?? ""),
       heroImage: hj?.image ?? "",
       chiefDoctorId: lead?.id,
       available: fallback(hj?.available, base.hero.available, ""),
@@ -389,6 +401,7 @@ export function buildClinicDict(rawBase: Dict, content: ClinicPremiumContent, lo
       eyebrow: pick(aj?.eyebrow, base.about.eyebrow),
       title: aj?.title || (sample ? base.about.title : brandName),
       subtitle: pick(aj?.subtitle, base.about.subtitle),
+      image: aj?.image ?? "",
       values,
       stats: aboutStats,
     },

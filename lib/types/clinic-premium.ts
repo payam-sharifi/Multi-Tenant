@@ -58,6 +58,8 @@ export type ClinicAboutContent = {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
+  /** Optional photo of the practice, shown above the value cards. */
+  image?: string;
   values?: { title?: string; desc?: string; icon?: string }[];
   stats?: { value?: number; suffix?: string; label?: string }[];
 };
@@ -90,6 +92,7 @@ export type ClinicBranchContent = {
   x?: number;
   y?: number;
   serviceIds?: string[];
+  image?: string;
 };
 
 export type ClinicLocationsContent = {
@@ -140,6 +143,8 @@ export type ClinicPremiumContent = {
     faq: boolean;
   };
   header?: { hours?: string; book?: string };
+  /** Practice logo (https, allowed image host). Replaces the default plus mark in header and footer. */
+  logo?: string;
   contact?: { phone?: string; email?: string; address?: string; hours?: string };
   hero?: ClinicHeroContent;
   /** Services parsed from the JSON (empty when the section has no usable items). */
