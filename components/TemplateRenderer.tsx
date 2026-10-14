@@ -1,4 +1,5 @@
 import ClinicPremiumTemplate from '@/components/templates/clinic-premium/ClinicPremiumTemplate';
+import HandwerkPremiumTemplate from '@/components/templates/handwerk-premium/HandwerkPremiumTemplate';
 import GeneralTemplate from '@/components/templates/GeneralTemplate';
 import MedicalTemplate from '@/components/templates/MedicalTemplate';
 import RestaurantTemplate from '@/components/templates/RestaurantTemplate';
@@ -28,6 +29,9 @@ export default function TemplateRenderer({
     case 'restaurant':
       return <RestaurantTemplate data={data} dict={dict} locale={locale} />;
     case 'services':
+      if (data.templateId === 'handwerk-premium') {
+        return <HandwerkPremiumTemplate data={data} dict={dict} locale={locale} />;
+      }
       return <ServicesTemplate data={data} dict={dict} locale={locale} />;
     default:
       return <GeneralTemplate data={data} dict={dict} locale={locale} />;

@@ -13,6 +13,7 @@ import {
 } from '@/lib/types/template';
 import { safeImageUrl } from '@/lib/image-hosts';
 import { buildClinicPremiumContent } from '@/lib/clinic-premium';
+import { buildHandwerkPremiumContent } from '@/lib/handwerk-premium';
 
 export const DEFAULT_COLORS: Record<
   BusinessType,
@@ -68,6 +69,12 @@ const ALIASES: Record<string, BusinessType> = {
   plumbing: 'services',
   cleaning: 'services',
   construction: 'services',
+  sanierung: 'services',
+  renovierung: 'services',
+  umbau: 'services',
+  handwerkpremium: 'services',
+  renovationpremium: 'services',
+  velora: 'services',
   general: 'general',
   default: 'general',
   corporate: 'general',
@@ -83,7 +90,7 @@ const SALON_RE =
 const RESTAURANT_RE =
   /رستوران|کافه|غذا|restaurant|gastro|café|cafe|bistro|speise|küche|kuche|food|imbiss|pizzeria|bakery|bäckerei/;
 const SERVICES_RE =
-  /ماساژ|اسپا|spa|massage|yoga|wellness|ریلکس|حجامت|handwerk|reparatur|reinigung|umzug|garten|dienstleistung|service|pflege|installation|plumbing|cleaning|construction/;
+  /ماساژ|اسپا|spa|massage|yoga|wellness|ریلکس|حجامت|handwerk|reparatur|reinigung|umzug|garten|dienstleistung|service|pflege|installation|plumbing|cleaning|construction|sanierung|renovierung|umbau|trockenbau|badsanierung/;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -145,6 +152,15 @@ function aliasOf(value: unknown): BusinessType | null {
 }
 
 const CLINIC_PREMIUM_NAMES = new Set(['clinic-premium', 'clinic_premium', 'clinicpremium', 'lumera']);
+const HANDWERK_PREMIUM_NAMES = new Set([
+  'handwerk-premium',
+  'handwerk_premium',
+  'handwerkpremium',
+  'renovation-premium',
+  'renovation_premium',
+  'sanierung-premium',
+  'velora',
+]);
 
 /**
  * Design variant of the business type. Set either with theme_config.template = "clinic-premium"
@@ -153,9 +169,12 @@ const CLINIC_PREMIUM_NAMES = new Set(['clinic-premium', 'clinic_premium', 'clini
 function resolveTemplateId(theme: Record<string, unknown>, raw: Record<string, unknown>): string | undefined {
   const explicit = firstString(theme.template, theme.templateId, theme.template_id).toLowerCase();
   if (CLINIC_PREMIUM_NAMES.has(explicit)) return 'clinic-premium';
+  if (HANDWERK_PREMIUM_NAMES.has(explicit)) return 'handwerk-premium';
   if (explicit) return explicit;
   const named = [theme.theme, raw.theme, raw.template].map((value) => str(value).toLowerCase());
-  return named.some((value) => CLINIC_PREMIUM_NAMES.has(value)) ? 'clinic-premium' : undefined;
+  if (named.some((value) => CLINIC_PREMIUM_NAMES.has(value))) return 'clinic-premium';
+  if (named.some((value) => HANDWERK_PREMIUM_NAMES.has(value))) return 'handwerk-premium';
+  return undefined;
 }
 
 export function resolveThemeConfigType(themeConfig: unknown): BusinessType | null {
@@ -563,6 +582,10 @@ export function buildSiteConfig(
     clinic:
       templateId === 'clinic-premium'
         ? buildClinicPremiumContent(raw, services, servicesBlock)
+        : undefined,
+    handwerk:
+      templateId === 'handwerk-premium'
+        ? buildHandwerkPremiumContent(raw, services, servicesBlock)
         : undefined,
     branding: {
       name,

@@ -1,4 +1,5 @@
 import type { ClinicPremiumContent } from '@/lib/types/clinic-premium';
+import type { HandwerkPremiumContent } from '@/lib/types/handwerk-premium';
 
 export const BUSINESS_TYPES = [
   'medical',
@@ -111,6 +112,8 @@ export type SiteConfig = {
   templateId?: string;
   /** Parsed content for the clinic-premium template (only set for that template). */
   clinic?: ClinicPremiumContent;
+  /** Parsed content for the handwerk-premium renovation template. */
+  handwerk?: HandwerkPremiumContent;
   menu: MenuCategory[];
   booking: BookingConfig;
   gallery: GalleryItem[];

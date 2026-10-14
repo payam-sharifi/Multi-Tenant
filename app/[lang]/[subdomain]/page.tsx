@@ -9,6 +9,9 @@ import { resolveSiteIcon } from '@/lib/site-icon';
 import clinicPremiumFixture from '@/fixtures/clinic-premium.json';
 import clinicHermesFixture from '@/fixtures/clinic-hermes-minimal.json';
 import clinicHermesFullFixture from '@/fixtures/clinic-hermes-full.json';
+import handwerkPremiumFixture from '@/fixtures/handwerk-premium.json';
+import handwerkHermesFixture from '@/fixtures/handwerk-hermes-minimal.json';
+import handwerkHermesFullFixture from '@/fixtures/handwerk-hermes-full.json';
 import { buildSiteConfig, isBusinessType } from '@/lib/site-config';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import TemplateRenderer from '@/components/TemplateRenderer';
@@ -82,7 +85,13 @@ export default async function DynamicWebsitePage({
           ? clinicHermesFixture
           : query.fixture === 'clinic-hermes-full'
             ? clinicHermesFullFixture
-            : null
+            : query.fixture === 'handwerk-premium'
+              ? handwerkPremiumFixture
+              : query.fixture === 'handwerk-hermes-minimal'
+                ? handwerkHermesFixture
+                : query.fixture === 'handwerk-hermes-full'
+                  ? handwerkHermesFullFixture
+                  : null
       : null;
   const website = devFixture ?? (await getWebsiteData(subdomain));
   const preview = typeof query.template === 'string' ? query.template : '';
@@ -108,6 +117,8 @@ export default async function DynamicWebsitePage({
   const themeConfig =
     process.env.NODE_ENV !== 'production' && preview === 'clinic-premium'
       ? { theme: 'medical', template: 'clinic-premium' }
+      : process.env.NODE_ENV !== 'production' && preview === 'handwerk-premium'
+        ? { theme: 'services', template: 'handwerk-premium' }
       : process.env.NODE_ENV !== 'production' && isBusinessType(preview)
         ? { theme: preview }
         : website.theme_config;
