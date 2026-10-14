@@ -1,0 +1,24 @@
+{
+  "site_data": {
+    "business_name": "Muster Sanierung GmbH",
+    "phone": "+49 40 5550 880",
+    "address": "Beispielweg 12, 20095 Hamburg",
+    "sections": [
+      {
+        "type": "hero",
+        "title": "Sanierung aus einer Hand",
+        "subtitle": "Bad, Küche und Altbau — Hamburg und Umgebung.",
+        "cta_button": "Beratung anfragen"
+      },
+      {
+        "type": "services",
+        "items": [
+          { "name": "Badsanierung", "description": "Komplettes Bad, schlüsselfertig." },
+          { "name": "Malerarbeiten", "description": "Wände, Decken, Fassade." }
+        ]
+      },
+      { "type": "working_hours", "text": "Mo–Fr 07:30–17:00" }
+    ]
+  },
+  "theme_config": { "theme": "handwerk-premium", "active": true }
+}

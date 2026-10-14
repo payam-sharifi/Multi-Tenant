@@ -182,3 +182,114 @@ html:has([data-template="clinic-premium"]) {
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
 }
+
+/* ------------------------------------------------------------------ */
+/* handwerk-premium (renovation / Sanierung template)                  */
+/* ------------------------------------------------------------------ */
+html:has([data-template="handwerk-premium"]) {
+  scroll-behavior: smooth;
+}
+
+[data-template="handwerk-premium"] {
+  --hw-ink: #15241c;
+  --hw-forest: #1e3a2f;
+  --hw-forest-deep: #122018;
+  --hw-clay: #c45c26;
+  --hw-clay-dark: #9a4318;
+  --hw-cream: #f6f1e8;
+  --hw-sand: #e8dfd2;
+  --hw-stone: #8a7a68;
+  background: var(--hw-cream);
+  color: var(--hw-ink);
+
+  ::selection {
+    background: #c45c26;
+    color: #f6f1e8;
+  }
+  a[href],
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility hw-container {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: --spacing(4);
+  @variant sm {
+    padding-inline: --spacing(6);
+  }
+  @variant lg {
+    padding-inline: --spacing(8);
+  }
+}
+
+@utility hw-section {
+  padding-block: --spacing(20);
+  @variant sm {
+    padding-block: --spacing(24);
+  }
+}
+
+@utility hw-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hw-clay-dark);
+}
+
+@utility hw-heading {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-size: var(--text-3xl);
+  line-height: 1.15;
+  font-weight: 600;
+  color: var(--hw-forest);
+  @variant sm {
+    font-size: var(--text-4xl);
+  }
+  @variant lg {
+    font-size: var(--text-5xl);
+  }
+}
+
+@utility hw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: --spacing(2);
+  border-radius: 0.2rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+@utility hw-btn-clay {
+  background: var(--hw-clay);
+  color: #fff;
+  &:hover {
+    background: var(--hw-clay-dark);
+  }
+}
+
+@utility hw-btn-ghost {
+  border: 1px solid color-mix(in srgb, var(--hw-cream) 35%, transparent);
+  color: var(--hw-cream);
+  &:hover {
+    background: color-mix(in srgb, var(--hw-cream) 10%, transparent);
+  }
+}
+
+@utility hw-input {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--hw-forest) 15%, transparent);
+  background: #fff;
+  padding: --spacing(3) --spacing(4);
+  color: var(--hw-forest);
+  outline: none;
+  &:focus {
+    border-color: var(--hw-clay);
+  }
+}
