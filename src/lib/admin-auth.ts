@@ -37,5 +37,9 @@ export function isAdminLoginPath(pathname: string): boolean {
 }
 
 export function isAdminApiPath(pathname: string): boolean {
-  return pathname.startsWith('/api/templates') || pathname.startsWith('/api/dashboard');
+  return (
+    pathname.startsWith('/api/templates') ||
+    pathname.startsWith('/api/dashboard') ||
+    pathname.startsWith('/api/admin/support')
+  );
 }

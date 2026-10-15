@@ -16,6 +16,7 @@ import { isTemplateId, resolveTemplateId, type TemplateId } from '@/templates/re
 
 export type TemplateTenant = SiteFields & {
   id: string;
+  userId?: string;
   name: string;
   owner?: string;
 };
@@ -97,7 +98,7 @@ function tenantFromRow(row: WebsiteRow, user?: UserRow): TemplateTenant {
   const owner =
     firstString(user?.full_name, user?.first_name, raw.owner_name, raw.owner, raw.doctor_name) ||
     undefined;
-  return { id: String(row.id || ''), ...fields, name, owner };
+  return { id: String(row.id || ''), userId: user?.id, ...fields, name, owner };
 }
 
 export async function listTemplateTenants(templateId: TemplateId): Promise<TemplateTenant[]> {

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LogoutButton } from '@/components/dashboard/LogoutButton';
+import { AdminNav } from '@/components/dashboard/AdminNav';
 import { SiteEditor } from '@/components/dashboard/SiteEditor';
 import type { TemplateDashboard as DashboardData } from '@/lib/template-dashboard';
 
@@ -15,7 +15,7 @@ export function TemplateDashboard({ template, fixture, tenants }: DashboardData)
             <h1 className="mt-1 text-2xl font-black">{template.titleFa}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <LogoutButton />
+            <AdminNav current="templates" />
             <Link
               href={template.href}
               className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-700"
