@@ -4,13 +4,23 @@ import { Logo } from '@/templates/haustechnik-base/Logo';
 import { useHaustechnik } from '@/templates/haustechnik-base/context';
 
 export function Footer() {
-  const { legalName, nav, impressumHref, datenschutzHref, content } = useHaustechnik();
+  const { legalName, nav, impressumHref, datenschutzHref, content, email, phoneDisplay, phoneHref } = useHaustechnik();
   return (
     <footer className="bg-[var(--mh-navy-deep)] text-white">
       <div className="mh-container grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-2">
           <Logo light />
           <p className="mt-5 max-w-md text-sm leading-relaxed text-white/70">{content.footerAbout}</p>
+          {phoneDisplay && (
+            <p className="mt-4 text-sm text-white/80">
+              <a href={phoneHref} className="hover:text-white">{phoneDisplay}</a>
+            </p>
+          )}
+          {email && (
+            <p className="text-sm text-white/80">
+              <a href={`mailto:${email}`} className="hover:text-white">{email}</a>
+            </p>
+          )}
         </div>
         <div>
           <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-orange-300">Navigation</h2>

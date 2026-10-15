@@ -1,12 +1,12 @@
 'use client';
 
-import { CalendarCheck, Menu, Phone, X } from 'lucide-react';
+import { CalendarCheck, Mail, Menu, Phone, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Logo } from '@/templates/haustechnik-base/Logo';
 import { useHaustechnik } from '@/templates/haustechnik-base/context';
 
 export function Header() {
-  const { emergencyHours, hours, nav, phoneHref } = useHaustechnik();
+  const { emergencyHours, hours, nav, phoneHref, email } = useHaustechnik();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -58,6 +58,15 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-[var(--mh-navy)]/80 hover:text-[var(--mh-navy)] xl:inline-flex"
+              >
+                <Mail className="h-4 w-4" aria-hidden />
+                {email}
+              </a>
+            )}
             <a href={phoneHref} className="mh-btn mh-btn-accent hidden h-11 px-4 text-sm lg:inline-flex">
               <Phone className="h-4 w-4" aria-hidden />
               24/7 Notdienst anrufen
@@ -99,6 +108,16 @@ export function Header() {
                   {item.label}
                 </a>
               ))}
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  className="mt-3 inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-[var(--mh-navy)]"
+                  onClick={() => setOpen(false)}
+                >
+                  <Mail className="h-4 w-4" aria-hidden />
+                  {email}
+                </a>
+              )}
               <a href={phoneHref} className="mh-btn mh-btn-accent mt-3 h-12" onClick={() => setOpen(false)}>
                 <Phone className="h-4 w-4" aria-hidden />
                 24/7 Notdienst anrufen

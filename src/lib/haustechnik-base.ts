@@ -97,33 +97,74 @@ const DEFAULT_BENEFITS: HaustechnikBenefit[] = [
   },
 ];
 
+function sameKey(a: string, b: string): boolean {
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
+function overlayByKey<T extends object>(incoming: T[], fallback: T[], keyOf: (item: T) => string): T[] {
+  if (!incoming.length) return fallback;
+  if (!fallback.length) return incoming;
+  const key = (item: T) => keyOf(item).trim().toLowerCase();
+  const isPatch =
+    incoming.length < fallback.length &&
+    incoming.every((item) => {
+      const itemKey = key(item);
+      return Boolean(itemKey && fallback.some((row) => key(row) === itemKey));
+    });
+  if (!isPatch) return incoming;
+  const result = fallback.map((row) => ({ ...row }));
+  for (const item of incoming) {
+    const itemKey = key(item);
+    const index = result.findIndex((row) => key(row) === itemKey);
+    if (index >= 0) result[index] = { ...result[index], ...item };
+    else result.push({ ...item });
+  }
+  return result;
+}
+
+function mergeStringList(provided: string[], fallback: string[], limit = 6): string[] {
+  const incoming = provided.map((item) => item.trim()).filter(Boolean);
+  if (!incoming.length) return fallback;
+  if (incoming.length >= fallback.length) return incoming.slice(0, limit);
+  const result = [...fallback];
+  for (const item of incoming) {
+    if (!result.some((row) => sameKey(row, item))) result.push(item);
+  }
+  return result.slice(0, limit);
+}
+
+function mapServiceEntry(entry: unknown, index: number): HaustechnikService | null {
+  const item = rec(entry) ?? {};
+  if (item.active === false || item.enabled === false) return null;
+  const title = first(item.title, item.name);
+  if (!title) return null;
+  const points = stringList(item.points ?? item.tags ?? item.highlights);
+  const mapped: HaustechnikService = {
+    id: first(item.id, item.slug) || `service-${index}`,
+    title,
+    description: first(item.description, item.desc, item.text),
+    points,
+  };
+  if (item.featured === true) mapped.featured = true;
+  return mapped;
+}
+
 function mapServices(raw: Rec, fallback: SiteService[]): HaustechnikService[] {
   const section = findSection(raw, ['services', 'service', 'leistungen']);
-  const source = list(section).length ? list(section) : fallback;
-  const items = source
-    .map((entry, index) => {
-      const item = rec(entry) ?? {};
-      if (item.active === false || item.enabled === false) return null;
-      const title = first(item.title, item.name);
-      if (!title) return null;
-      const points = stringList(item.points ?? item.tags ?? item.highlights);
-      const mapped: HaustechnikService = {
-        id: first(item.id, item.slug) || `service-${index}`,
-        title,
-        description: first(item.description, item.desc, item.text),
-        points,
-      };
-      if (item.featured === true) mapped.featured = true;
-      return mapped;
-    })
+  const incoming = list(section)
+    .map((entry, index) => mapServiceEntry(entry, index))
     .filter((item): item is HaustechnikService => Boolean(item));
-
-  return items.length ? items : DEFAULT_SERVICES;
+  const fromFallback = fallback
+    .map((entry, index) => mapServiceEntry(entry, index))
+    .filter((item): item is HaustechnikService => Boolean(item));
+  const base = fromFallback.length ? fromFallback : DEFAULT_SERVICES;
+  if (!incoming.length) return base;
+  return overlayByKey(incoming, base, (item) => item.title);
 }
 
 function mapBenefits(raw: Rec): HaustechnikBenefit[] {
   const section = findSection(raw, ['benefits', 'trust', 'why', 'guarantees']);
-  const items = list(section)
+  const incoming = list(section)
     .map((entry) => {
       const item = rec(entry) ?? {};
       const title = first(item.title, item.name);
@@ -132,7 +173,7 @@ function mapBenefits(raw: Rec): HaustechnikBenefit[] {
       return { title, description } satisfies HaustechnikBenefit;
     })
     .filter((item): item is HaustechnikBenefit => Boolean(item));
-  return items.length ? items : DEFAULT_BENEFITS;
+  return overlayByKey(incoming, DEFAULT_BENEFITS, (item) => item.title);
 }
 
 export function buildHaustechnikContent(
@@ -159,9 +200,11 @@ export function buildHaustechnikContent(
     heroSubtitle:
       first(hero.subtitle, hero.description) ||
       'Von der Badmodernisierung bis zur Notfall-Reparatur – Schnell, transparent und regional in Ihrer Nähe.',
-    highlights: stringList(hero.highlights).length
-      ? stringList(hero.highlights)
-      : ['Meisterbetrieb', 'Festpreis vor Start', 'Regional in München'],
+    highlights: mergeStringList(stringList(hero.highlights), [
+      'Meisterbetrieb',
+      'Festpreis vor Start',
+      'Regional in München',
+    ]),
     servicesEyebrow: first(findSection(data, ['services'])?.eyebrow) || 'Leistungen',
     servicesTitle: first(findSection(data, ['services'])?.title) || 'Unsere Leistungen',
     servicesSubtitle:

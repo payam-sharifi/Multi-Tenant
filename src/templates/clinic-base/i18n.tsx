@@ -125,6 +125,131 @@ function mergeList<P, D, V>(
   return out;
 }
 
+function sameKey(a: string, b: string): boolean {
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
+function overlayByKey<T extends object>(
+  incoming: T[],
+  fallback: T[],
+  keyOf: (item: T) => string,
+): T[] {
+  if (!incoming.length) return fallback;
+  if (!fallback.length) return incoming;
+  const key = (item: T) => keyOf(item).trim().toLowerCase();
+  const isPatch =
+    incoming.length < fallback.length &&
+    incoming.every((item) => {
+      const itemKey = key(item);
+      return Boolean(itemKey && fallback.some((row) => key(row) === itemKey));
+    });
+  if (!isPatch) return incoming;
+  const result = fallback.map((row) => ({ ...row }));
+  for (const item of incoming) {
+    const itemKey = key(item);
+    const index = result.findIndex((row) => key(row) === itemKey);
+    if (index >= 0) result[index] = { ...result[index], ...item };
+    else result.push({ ...item });
+  }
+  return result;
+}
+
+function mergeStringList(provided: string[] | undefined, fallback: string[], limit = 8): string[] {
+  const incoming = (provided ?? []).map((item) => item.trim()).filter(Boolean);
+  if (!incoming.length) return fallback;
+  if (!fallback.length || incoming.length >= fallback.length) return incoming.slice(0, limit);
+  const result = [...fallback];
+  for (const item of incoming) {
+    if (!result.some((row) => sameKey(row, item))) result.push(item);
+  }
+  return result.slice(0, limit);
+}
+
+function mergeHeroStats(
+  provided: { value?: string; label?: string }[] | undefined,
+  fallback: { value: string; label: string }[],
+): { value: string; label: string }[] {
+  const incoming = (provided ?? [])
+    .map((item) => ({ value: item.value?.trim() ?? "", label: item.label?.trim() ?? "" }))
+    .filter((item) => item.value || item.label);
+  const complete = incoming.filter((item): item is { value: string; label: string } =>
+    Boolean(item.value && item.label),
+  );
+  if (!incoming.length) return fallback;
+  if (!fallback.length) return complete;
+  const matchesFallback = (item: { value: string; label: string }) =>
+    fallback.some(
+      (stat) =>
+        (item.label && sameKey(stat.label, item.label)) ||
+        (item.value && sameKey(stat.value, item.value)),
+    );
+  const isPatch =
+    incoming.length < fallback.length ||
+    incoming.some((item) => !item.value || !item.label) ||
+    incoming.every(matchesFallback);
+  if (!isPatch) return complete;
+  const result = fallback.map((item) => ({ ...item }));
+  for (const item of incoming) {
+    const index = result.findIndex(
+      (stat) =>
+        (item.label && sameKey(stat.label, item.label)) ||
+        (item.value && sameKey(stat.value, item.value)),
+    );
+    if (index >= 0) {
+      result[index] = {
+        value: item.value || result[index].value,
+        label: item.label || result[index].label,
+      };
+    } else if (item.value && item.label) {
+      result.push(item);
+    }
+  }
+  return result.filter((item) => item.value && item.label).slice(0, 4);
+}
+
+function mergeAboutStats(
+  provided: { value?: number; suffix?: string; label?: string }[] | undefined,
+  fallback: readonly { value: number; suffix: string; label: string }[],
+): { value: number; suffix: string; label: string }[] {
+  const incoming = (provided ?? []).filter((item) => item.value !== undefined || item.label);
+  if (!incoming.length) return fallback.map((item) => ({ ...item }));
+  const complete = incoming
+    .filter((item): item is { value: number; suffix?: string; label: string } =>
+      Boolean(item.value !== undefined && item.label),
+    )
+    .map((item) => ({ value: item.value, suffix: item.suffix ?? "", label: item.label }));
+  if (!fallback.length) return complete;
+  const isPatch =
+    incoming.length < fallback.length ||
+    incoming.some((item) => item.value === undefined || !item.label) ||
+    incoming.every((item) =>
+      fallback.some(
+        (stat) =>
+          (item.label && sameKey(stat.label, item.label)) ||
+          (item.value !== undefined && stat.value === item.value),
+      ),
+    );
+  if (!isPatch) return complete;
+  const result = fallback.map((item) => ({ ...item }));
+  for (const item of incoming) {
+    const index = result.findIndex(
+      (stat) =>
+        (item.label && sameKey(stat.label, item.label)) ||
+        (item.value !== undefined && stat.value === item.value),
+    );
+    if (index >= 0) {
+      result[index] = {
+        value: item.value ?? result[index].value,
+        suffix: item.suffix ?? result[index].suffix,
+        label: item.label || result[index].label,
+      };
+    } else if (item.value !== undefined && item.label) {
+      result.push({ value: item.value, suffix: item.suffix ?? "", label: item.label });
+    }
+  }
+  return result.slice(0, 4);
+}
+
 const telHref = (phone: string) => `tel:${phone.replace(/[^\d+]/g, "")}`;
 
 /** Fallback pin positions (in %) for branches that do not provide x/y. */
@@ -187,9 +312,11 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
   }));
   const serviceItems = !present.services
     ? []
-    : jsonServices.length
-      ? jsonServices
-      : (defs(defaultServices) as ClinicServiceView[]).slice();
+    : overlayByKey(
+        jsonServices,
+        (defs(defaultServices) as ClinicServiceView[]).slice(),
+        (item) => item.title,
+      );
   const serviceIndexOf = (id?: string) => {
     if (!id) return undefined;
     const index = serviceItems.findIndex((item) => item.id === id);
@@ -204,28 +331,40 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
   const dj = content.doctors;
   const doctorItems: ClinicDoctorView[] = !present.doctors
     ? []
-    : mergeList(dj?.items, defs(defaultDoctors), (p, d, i) => {
-        const name = p?.name ?? (p ? undefined : d?.name);
-        if (!name) return null;
-        return {
-          id: p?.id ?? d?.id ?? `doctor-${i + 1}`,
-          name,
-          spec: p?.specialty ?? (d ? base.doctors.specs[d.specIndex] : ""),
-          rating: p?.rating ?? d?.rating,
-          years: p?.years ?? d?.years,
-          image: p?.image ?? d?.image ?? (sample ? defaultDoctors[i % defaultDoctors.length].image : ""),
-          serviceIndex: p ? serviceIndexOf(p.serviceId) : safeIndex(d?.serviceIndex),
-        };
-      });
+    : overlayByKey(
+        mergeList(dj?.items, [], (p, d, i) => {
+          const name = p?.name ?? (p ? undefined : d?.name);
+          if (!name) return null;
+          return {
+            id: p?.id ?? d?.id ?? `doctor-${i + 1}`,
+            name,
+            spec: p?.specialty ?? (d ? base.doctors.specs[d.specIndex] : ""),
+            rating: p?.rating ?? d?.rating,
+            years: p?.years ?? d?.years,
+            image: p?.image ?? d?.image ?? (sample ? defaultDoctors[i % defaultDoctors.length].image : ""),
+            serviceIndex: p ? serviceIndexOf(p.serviceId) : safeIndex(d?.serviceIndex),
+          };
+        }),
+        mergeList(undefined, defs(defaultDoctors), (p, d, i) => {
+          const name = p?.name ?? d?.name;
+          if (!name) return null;
+          return {
+            id: p?.id ?? d?.id ?? `doctor-${i + 1}`,
+            name,
+            spec: p?.specialty ?? (d ? base.doctors.specs[d.specIndex] : ""),
+            rating: p?.rating ?? d?.rating,
+            years: p?.years ?? d?.years,
+            image: p?.image ?? d?.image ?? (sample ? defaultDoctors[i % defaultDoctors.length].image : ""),
+            serviceIndex: p ? serviceIndexOf(p.serviceId) : safeIndex(d?.serviceIndex),
+          };
+        }),
+        (item) => item.name,
+      );
 
   /* hero */
   const hj = content.hero;
   const lead = present.doctors && !hj?.chiefName ? doctorItems[0] : undefined;
-  const heroStats = mergeList(hj?.stats, defs(base.hero.stats), (p, d) => {
-    const value = p?.value ?? d?.value;
-    const label = p?.label ?? d?.label;
-    return value && label ? { value, label } : null;
-  });
+  const heroStats = mergeHeroStats(hj?.stats, [...defs(base.hero.stats)]);
   const avatars: { src: string; name: string }[] = hj?.avatars
     ? hj.avatars.map((src) => ({ src, name: "" }))
     : present.doctors
@@ -238,7 +377,7 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
 
   /* checkup */
   const cj = content.checkup;
-  const plans: ClinicPlanView[] = mergeList(cj?.plans, defs(base.checkup.plans), (p, d, i) => {
+  const makePlan = (p: (typeof cj)["plans"] extends (infer I)[] | undefined ? I : never, d: (typeof base.checkup.plans)[number] | undefined, i: number): ClinicPlanView | null => {
     const name = p?.name ?? (p ? undefined : d?.name);
     if (!name) return null;
     const meta = defaultCheckupMeta[i];
@@ -253,21 +392,29 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
       features: p ? (p.features ?? []) : d ? [...d.features] : [],
       serviceIndex: p ? serviceIndexOf(p.serviceId) : safeIndex([0, 4, 2][i]),
     };
-  });
+  };
+  const plans: ClinicPlanView[] = overlayByKey(
+    mergeList(cj?.plans, [], makePlan),
+    mergeList(undefined, defs(base.checkup.plans), makePlan),
+    (item) => item.name,
+  );
 
   /* about */
   const aj = content.about;
-  const values = mergeList(aj?.values, defs(base.about.values), (p, d, i) => {
-    const title = p?.title ?? d?.title;
-    if (!title) return null;
-    return { title, desc: p?.desc ?? d?.desc ?? "", icon: p?.icon ?? defaultValueIcons[i] ?? "award" };
-  });
-  const aboutStats = mergeList(aj?.stats, defs(base.about.stats), (p, d) => {
-    const value = p?.value ?? d?.value;
-    const label = p?.label ?? d?.label;
-    if (value === undefined || !label) return null;
-    return { value, suffix: p?.suffix ?? d?.suffix ?? "", label };
-  });
+  const values = overlayByKey(
+    mergeList(aj?.values, [], (p, d, i) => {
+      const title = p?.title ?? d?.title;
+      if (!title) return null;
+      return { title, desc: p?.desc ?? d?.desc ?? "", icon: p?.icon ?? defaultValueIcons[i] ?? "award" };
+    }),
+    mergeList(undefined, defs(base.about.values), (p, d, i) => {
+      const title = p?.title ?? d?.title;
+      if (!title) return null;
+      return { title, desc: p?.desc ?? d?.desc ?? "", icon: p?.icon ?? defaultValueIcons[i] ?? "award" };
+    }),
+    (item) => item.title,
+  );
+  const aboutStats = mergeAboutStats(aj?.stats, defs(base.about.stats));
 
   /* locations */
   const lj = content.locations;
@@ -275,31 +422,52 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
   const branchPhone = content.contact?.phone ?? (sample ? PHONE : "");
   const branchItems: ClinicBranchView[] = !present.locations
     ? []
-    : mergeList(lj?.items, defs(defaultBranches), (p, d, i) => {
-        const name = p?.name ?? (p ? undefined : d?.name);
-        if (!name) return null;
-        const phone = p?.phone ?? d?.phone ?? branchPhone;
-        const pin = autoPin(i);
-        const fromIds = p?.serviceIds
-          ?.map((id) => serviceIndexOf(id))
-          .filter((index): index is number => index !== undefined);
-        return {
-          id: p?.id ?? d?.id ?? `branch-${i + 1}`,
-          name,
-          address: p?.address ?? d?.address ?? "",
-          phone,
-          phoneHref: phone ? telHref(phone) : "",
-          hours: p?.hours ?? lj?.hours ?? content.contact?.hours ?? (sample ? base.locations.hours : ""),
-          image: p?.image ?? "",
-          x: p?.x ?? pin.x,
-          y: p?.y ?? pin.y,
-          services: fromIds?.length
-            ? fromIds
-            : p
-              ? allServiceIndexes
-              : (d?.services ?? []).filter((index) => serviceItems[index]),
-        };
-      });
+    : overlayByKey(
+        mergeList(lj?.items, [], (p, d, i) => {
+          const name = p?.name ?? (p ? undefined : d?.name);
+          if (!name) return null;
+          const phone = p?.phone ?? d?.phone ?? branchPhone;
+          const pin = autoPin(i);
+          const fromIds = p?.serviceIds
+            ?.map((id) => serviceIndexOf(id))
+            .filter((index): index is number => index !== undefined);
+          return {
+            id: p?.id ?? d?.id ?? `branch-${i + 1}`,
+            name,
+            address: p?.address ?? d?.address ?? "",
+            phone,
+            phoneHref: phone ? telHref(phone) : "",
+            hours: p?.hours ?? lj?.hours ?? content.contact?.hours ?? (sample ? base.locations.hours : ""),
+            image: p?.image ?? "",
+            x: p?.x ?? pin.x,
+            y: p?.y ?? pin.y,
+            services: fromIds?.length
+              ? fromIds
+              : p
+                ? allServiceIndexes
+                : (d?.services ?? []).filter((index) => serviceItems[index]),
+          };
+        }),
+        mergeList(undefined, defs(defaultBranches), (p, d, i) => {
+          const name = p?.name ?? d?.name;
+          if (!name) return null;
+          const phone = p?.phone ?? d?.phone ?? branchPhone;
+          const pin = autoPin(i);
+          return {
+            id: p?.id ?? d?.id ?? `branch-${i + 1}`,
+            name,
+            address: p?.address ?? d?.address ?? "",
+            phone,
+            phoneHref: phone ? telHref(phone) : "",
+            hours: p?.hours ?? lj?.hours ?? content.contact?.hours ?? (sample ? base.locations.hours : ""),
+            image: p?.image ?? "",
+            x: p?.x ?? pin.x,
+            y: p?.y ?? pin.y,
+            services: (d?.services ?? []).filter((index) => serviceItems[index]),
+          };
+        }),
+        (item) => item.name,
+      );
 
   /* faq */
   const faqItems = present.faq ? (content.faq?.items ?? []) : [];
@@ -374,11 +542,11 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
         badge: pick(ex?.badge, baseEx.badge),
         title: pick(ex?.title, baseEx.title),
         desc: pick(ex?.desc, baseEx.desc),
-        tags: ex?.tags?.length ? ex.tags : baseEx.tags,
-        highlights: ex?.highlights?.length ? ex.highlights : baseEx.highlights,
+        tags: mergeStringList(ex?.tags, sample ? baseEx.tags : []),
+        highlights: mergeStringList(ex?.highlights, sample ? baseEx.highlights : []),
         cta: pick(ex?.cta, baseEx.cta),
         resultTitle: pick(ex?.resultTitle, baseEx.resultTitle),
-        resultRows: ex?.resultRows?.length ? ex.resultRows : baseEx.resultRows,
+        resultRows: mergeStringList(ex?.resultRows, sample ? baseEx.resultRows : []),
         resultNorm: pick(ex?.resultNorm, baseEx.resultNorm),
         resultTime: pick(ex?.resultTime, baseEx.resultTime),
       },
