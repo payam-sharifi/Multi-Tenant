@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { ADMIN_COOKIE, hasAdminCookie, isAdminLoginPath, isAdminPath } from '@/lib/admin-auth';
 
 const locales = ['de', 'en'] as const;
 const defaultLocale = 'de';
-const appPaths = new Set(['dashboard']);
+const appPaths = new Set(['dashboard', 'admin']);
+const adminHosts = new Set(['dashboard', 'admin']);
 
 function isLocale(value: string): value is (typeof locales)[number] {
   return (locales as readonly string[]).includes(value);
@@ -43,6 +45,9 @@ export function proxy(request: NextRequest) {
 
   const mainDomain = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'localhost';
   let subdomain = getHostSubdomain(hostname, mainDomain);
+  if (subdomain && adminHosts.has(subdomain)) {
+    subdomain = null;
+  }
   const segments = url.pathname.split('/').filter(Boolean);
   const first = segments[0];
 
@@ -57,6 +62,13 @@ export function proxy(request: NextRequest) {
 
   if (!subdomain) {
     if (afterLocale.length === 0 || appPaths.has(afterLocale[0] || '')) {
+      if (isAdminPath(url.pathname) && !isAdminLoginPath(url.pathname) && !hasAdminCookie(request.cookies.get(ADMIN_COOKIE)?.value)) {
+        const loginUrl = url.clone();
+        loginUrl.pathname = '/admin/login';
+        loginUrl.search = `?next=${encodeURIComponent(`${url.pathname}${url.search}`)}`;
+        return NextResponse.redirect(loginUrl);
+      }
+
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-locale', locale);
       const response = NextResponse.next({ request: { headers: requestHeaders } });

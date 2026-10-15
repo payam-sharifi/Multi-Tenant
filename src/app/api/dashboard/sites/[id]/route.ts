@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdminApi } from '@/lib/require-admin';
 import { deleteWebsite, getWebsiteById, listWebsites, updateWebsite } from '@/lib/tenant';
 import { applySiteFields, sanitizeSubdomain, type SiteFields } from '@/lib/website-admin';
 
@@ -22,6 +23,8 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await params;
   const current = await getWebsiteById(id);
   if (!current) {
@@ -63,6 +66,8 @@ export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { id } = await params;
   const current = await getWebsiteById(id);
   if (!current) {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { requireAdminApi } from '@/lib/require-admin';
 import { isTemplateId } from '@/templates/registry';
 import { readTemplateFixture, writeTemplateFixture } from '@/lib/template-dashboard';
 
@@ -6,6 +7,8 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ templateId: string }> },
 ) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { templateId } = await params;
   if (!isTemplateId(templateId)) {
     return NextResponse.json({ error: 'قالب پیدا نشد' }, { status: 404 });
@@ -19,6 +22,8 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ templateId: string }> },
 ) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
   const { templateId } = await params;
   if (!isTemplateId(templateId)) {
     return NextResponse.json({ error: 'قالب پیدا نشد' }, { status: 404 });
