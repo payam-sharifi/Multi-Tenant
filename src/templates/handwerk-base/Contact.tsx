@@ -1,17 +1,23 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
 import { Clock, Mail, MapPin, Navigation, Phone } from "lucide-react";
+import {
+  formDataToFields,
+  LeadHoneypot,
+  useLeadSubmit,
+} from "@/components/shared/LeadProvider";
 import { sectionIds } from "@/templates/handwerk-base/data";
 import { useHandwerk } from "@/templates/handwerk-base/i18n";
 
 export function Contact() {
   const { t } = useHandwerk();
-  const [sent, setSent] = useState(false);
+  const { status, error, submit, sending } = useLeadSubmit("contact");
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSent(true);
+    const { fields, honeypot } = formDataToFields(event.currentTarget);
+    await submit(fields, honeypot);
   }
 
   return (
@@ -152,6 +158,7 @@ export function Contact() {
             onSubmit={onSubmit}
             className="rounded-2xl bg-[var(--hw-cream)] p-6 shadow-[0_18px_40px_-24px_rgba(21,36,28,0.4)]"
           >
+            <LeadHoneypot />
             <div className="grid gap-4 sm:grid-cols-2">
               <input
                 required
@@ -190,13 +197,19 @@ export function Contact() {
             </p>
             <button
               type="submit"
-              className="hw-btn hw-btn-clay mt-5 h-12 w-full"
+              disabled={sending}
+              className="hw-btn hw-btn-clay mt-5 h-12 w-full disabled:opacity-60"
             >
-              {t.contact.submit}
+              {sending ? t.contact.sending : t.contact.submit}
             </button>
-            {sent && (
+            {status === "sent" && (
               <p className="mt-3 text-sm text-[var(--hw-forest)]">
                 {t.contact.success}
+              </p>
+            )}
+            {status === "error" && (
+              <p className="mt-3 text-sm text-red-700">
+                {error || t.contact.error}
               </p>
             )}
           </form>

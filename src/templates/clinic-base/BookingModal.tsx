@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLeadSubmit } from "@/components/shared/LeadProvider";
 import { useBooking } from "@/templates/clinic-base/booking";
 import { timeSlots } from "@/templates/clinic-base/data";
 import { useI18n } from "@/templates/clinic-base/i18n";
@@ -60,6 +61,7 @@ export function BookingModal() {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const firstRef = useRef<HTMLInputElement>(null);
+  const { submit, error: sendError, reset: resetLead } = useLeadSubmit("booking");
 
   // reset + prefill each time the modal opens
   useEffect(() => {
@@ -79,6 +81,7 @@ export function BookingModal() {
     });
     setErrors({});
     setStatus("idle");
+    resetLead();
     const id = setTimeout(() => firstRef.current?.focus(), 350);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,14 +139,24 @@ export function BookingModal() {
     return e;
   };
 
-  const onSubmit = (ev: React.FormEvent) => {
+  const onSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     const e = validate();
     setErrors(e);
     if (Object.keys(e).length) return;
     setStatus("sending");
-    // Demo only: replace with a real API call (e.g. POST /api/appointments)
-    setTimeout(() => setStatus("done"), 1000);
+    const specTitle =
+      form.spec !== "" ? t.services.items[Number(form.spec)]?.title : "";
+    const doctorName = doctors.find((d) => d.id === form.doctor)?.name ?? "";
+    const ok = await submit({
+      name: form.name.trim(),
+      phone: form.phone.trim(),
+      spec: specTitle || form.spec,
+      doctor: doctorName,
+      date: form.date,
+      time: form.time,
+    });
+    setStatus(ok ? "done" : "idle");
   };
 
   const doc = doctors.find((d) => d.id === form.doctor);
@@ -379,6 +392,11 @@ export function BookingModal() {
                         b.submit
                       )}
                     </Button>
+                    {sendError && (
+                      <p className="text-center text-sm font-medium text-red-500">
+                        {sendError || b.errSend}
+                      </p>
+                    )}
                     <p className="flex items-start justify-center gap-2 text-center text-xs text-muted">
                       <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-mint-dark" />
                       {b.privacy}

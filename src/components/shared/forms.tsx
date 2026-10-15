@@ -1,6 +1,12 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, type FormEvent } from "react";
+import {
+  formDataToFields,
+  LeadHoneypot,
+  useLeadSubmit,
+  type LeadKind,
+} from "@/components/shared/LeadProvider";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 import type { BookingConfig } from "@/lib/types/template";
 
@@ -57,6 +63,7 @@ function StaticForm({
   dict,
   fields,
   extra,
+  kind,
 }: {
   title: string;
   note: string;
@@ -65,19 +72,21 @@ function StaticForm({
   dict: Dictionary;
   fields: string[];
   extra?: "guests";
+  kind: LeadKind;
 }) {
-  const [done, setDone] = useState(false);
   const visible = useMemo(
     () => new Set(fields.map((field) => field.toLowerCase())),
     [fields],
   );
+  const { status, error, submit, sending } = useLeadSubmit(kind);
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setDone(true);
+    const parsed = formDataToFields(event.currentTarget);
+    await submit(parsed.fields, parsed.honeypot);
   }
 
-  if (done) {
+  if (status === "sent") {
     return (
       <div className="rounded-2xl border border-black/10 bg-white p-6 text-sm leading-relaxed">
         <p className="font-semibold text-[var(--brand-primary)]">{success}</p>
@@ -90,6 +99,7 @@ function StaticForm({
       onSubmit={onSubmit}
       className="space-y-4 rounded-2xl border border-black/10 bg-white p-6 shadow-sm"
     >
+      <LeadHoneypot />
       <h3 className="text-xl font-extrabold">{title}</h3>
       {visible.has("name") ? (
         <Field id="name" label={dict.templates.formName} />
@@ -121,10 +131,16 @@ function StaticForm({
       ) : null}
       <button
         type="submit"
-        className="w-full rounded-full bg-[var(--brand-primary)] px-4 py-3 text-sm font-bold text-white transition hover:opacity-90"
+        disabled={sending}
+        className="w-full rounded-full bg-[var(--brand-primary)] px-4 py-3 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-60"
       >
-        {submitLabel}
+        {sending ? dict.templates.formSending : submitLabel}
       </button>
+      {status === "error" && (
+        <p className="text-sm text-red-600">
+          {error || dict.templates.formError}
+        </p>
+      )}
       <p className="text-xs opacity-60">{note}</p>
     </form>
   );
@@ -145,6 +161,7 @@ export function AppointmentForm({
       submitLabel={dict.templates.formSubmit}
       dict={dict}
       fields={booking.fields}
+      kind="appointment"
     />
   );
 }
@@ -165,6 +182,7 @@ export function ReservationForm({
       dict={dict}
       fields={booking.fields}
       extra="guests"
+      kind="reservation"
     />
   );
 }
@@ -188,6 +206,7 @@ export function QuoteRequestForm({
           ? booking.fields
           : ["name", "phone", "email", "message"]
       }
+      kind="quote"
     />
   );
 }

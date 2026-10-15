@@ -38,6 +38,7 @@ export async function loadTenantSite({
     locale,
     resolvePreviewThemeConfig(query, website.theme_config),
   );
+  config.subdomain = website.subdomain || website.slug || subdomain;
   config.basePath = resolveTenantBasePath(host, subdomain);
   config.previewQuery = previewQueryString(query);
   return { dict, config };

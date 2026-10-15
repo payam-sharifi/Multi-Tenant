@@ -87,8 +87,10 @@
     "formGuests": "Guests",
     "formMessage": "Message",
     "formSubmit": "Send",
+    "formSending": "Sending…",
     "formSuccess": "Thank you. We will get back to you shortly.",
-    "formNote": "Non-binding enquiry — frontend only, no backend yet.",
+    "formError": "The message could not be sent. Please try again.",
+    "formNote": "By submitting, your enquiry is sent directly to us.",
     "priceOnRequest": "on request"
   },
   "defaults": {
