@@ -4,7 +4,7 @@ import { TemplateGallery } from '@/components/dashboard/TemplateGallery';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'ادمین قالب‌ها',
+   title: 'ادمین قالب‌ها',
   description: 'داشبورد ادمین قالب‌های easyWeb',
 };
 
