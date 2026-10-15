@@ -113,25 +113,34 @@ function mapMessage(row: MessageRow): SupportMessage {
   };
 }
 
-const USER_COLUMNS = [
-  'id, full_name, first_name, language, telegram_id, whatsapp_phone, phone_number, active_website_id',
-  'id, full_name, first_name, telegram_id, whatsapp_phone, phone_number',
-  'id, full_name, first_name',
-] as const;
+function asUserRow(value: unknown): UserRow | null {
+  const row = asRecord(value);
+  const id = asString(row?.id);
+  if (!row || !id) return null;
+  return {
+    id,
+    full_name: asString(row.full_name) || null,
+    first_name: asString(row.first_name) || null,
+    language: asString(row.language) || null,
+    telegram_id: asString(row.telegram_id) || null,
+    whatsapp_phone: asString(row.whatsapp_phone) || null,
+    phone_number: asString(row.phone_number) || null,
+    active_website_id: asString(row.active_website_id) || null,
+  };
+}
 
 async function fetchUserRows(userId?: string): Promise<UserRow[]> {
   const supabase = getSupabase();
   if (!supabase) return [];
-  let lastError = '';
-  for (const columns of USER_COLUMNS) {
-    let query = supabase.from('users').select(columns);
-    if (userId) query = query.eq('id', userId);
-    const { data, error } = await query;
-    if (!error && data) return data as UserRow[];
-    lastError = error?.message || lastError;
+  const query = userId
+    ? supabase.from('users').select('*').eq('id', userId)
+    : supabase.from('users').select('*');
+  const { data, error } = await query;
+  if (error || !data) {
+    if (error) console.error('[support] list users failed', error.message);
+    return [];
   }
-  if (lastError) console.error('[support] list users failed', lastError);
-  return [];
+  return data.map(asUserRow).filter((row): row is UserRow => Boolean(row));
 }
 
 async function listUserRows(): Promise<UserRow[]> {
