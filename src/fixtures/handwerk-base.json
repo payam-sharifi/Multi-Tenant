@@ -1,0 +1,178 @@
+{
+  "site_data": {
+    "demo": true,
+    "business_name": "VELORA Wohnbau",
+    "phone": "+49 40 8090 4410",
+    "email": "hallo@velora-wohnbau.de",
+    "address": "Große Bleichen 31, 20354 Hamburg",
+    "sections": [
+      {
+        "type": "hero",
+        "badge": "Sanierung & Umbau · deutschlandweit",
+        "title": "Ihr Zuhause, schlüsselfertig neu gedacht — alle Gewerke, ein Ansprechpartner.",
+        "subtitle": "Kein Handwerker-Chaos, keine Überraschungen. Von der ersten Skizze bis zur besenreinen Übergabe begleiten wir Ihre Immobilie.",
+        "cta_button": "Kostenlose Beratung anfragen",
+        "ctaSecondary": "Leistungen ansehen",
+        "bullets": ["100 % Festpreis & Termine", "3D-Visualisierung vor Baustart", "Fördermittel-Service", "Alles aus einer Hand"],
+        "stats": [
+          { "value": "180+", "label": "realisierte Projekte" },
+          { "value": "21 Tage", "label": "Baustart-Zusage" },
+          { "value": "bis 70 %", "label": "mögliche Förderung" },
+          { "value": "5 Jahre", "label": "Gewährleistung" }
+        ],
+        "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=80"
+      },
+      {
+        "type": "services",
+        "eyebrow": "Leistungen",
+        "title": "Komfort beginnt mit den richtigen Experten",
+        "items": [
+          { "name": "Komplettsanierung", "description": "Altbau und Bestand komplett erneuern: Grundriss, Technik, Oberflächen — schlüsselfertig.", "image": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" },
+          { "name": "Wohnraum-Renovierung", "description": "Küche, Wohnzimmer, Flur: moderne Materialien, ruhige Farbwelten, saubere Übergaben.", "image": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80" },
+          { "name": "3D-Visualisierung", "description": "Sie sehen das Ergebnis, bevor der erste Hammer fällt.", "image": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80" },
+          { "name": "Staatliche Förderungen", "description": "Wir prüfen, beantragen und dokumentieren. KfW, BAFA und kommunale Programme.", "image": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=80" }
+        ]
+      },
+      {
+        "type": "guarantees",
+        "title": "Entwickelt, um Budget, Zeitplan und Ergebnis zu schützen",
+        "items": [
+          { "title": "Echter Festpreis", "description": "Steigt der Materialpreis, tragen wir die Differenz." },
+          { "title": "Baustart mit Ausfall-Garantie", "description": "Starten wir nicht im zugesagten Fenster, gilt eine Vertragsstrafe." },
+          { "title": "24h-Erreichbarkeit", "description": "Keine Antwort innerhalb von 24 Stunden — Ihr Meilenstein wird priorisiert." },
+          { "title": "Ein Projektleiter", "description": "Sie sprechen nur mit einer Person." },
+          { "title": "Volle Verantwortung", "description": "Fehler beheben wir unbürokratisch." },
+          { "title": "Fördermittel-Service", "description": "Prüfung, Antrag, Nachweise aus einer Hand." }
+        ]
+      },
+      {
+        "type": "projects",
+        "title": "Ausgeführte Arbeiten von VELORA Wohnbau",
+        "items": [
+          { "title": "Altbau Harvestehude", "area": "86 m²", "duration": "10 Wochen", "kind": "Komplettsanierung", "city": "Hamburg", "image": "https://images.unsplash.com/photo-1600607687644-c7171b42498b?auto=format&fit=crop&w=1100&q=80" },
+          { "title": "Stadtwohnung Belgisches Viertel", "area": "64 m²", "duration": "8 Wochen", "kind": "Designer-Renovierung", "city": "Köln", "image": "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1100&q=80" },
+          { "title": "Loft Maxvorstadt", "area": "92 m²", "duration": "12 Wochen", "kind": "Komplettsanierung", "city": "München", "image": "https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=1100&q=80" }
+        ]
+      },
+      {
+        "type": "reviews",
+        "title": "Google-Bewertungen aus Hamburg",
+        "subtitle": "Lesen Sie, wie Eigentümer aus Hamburg die Zusammenarbeit bewerten — Auszüge aus unseren Google-Bewertungen.",
+        "rating": "4,9",
+        "count": "47 Google-Bewertungen",
+        "location": "Hamburg",
+        "items": [
+          { "name": "Clara Weiss", "city": "Harvestehude", "date": "vor 2 Monaten", "text": "Ruhige Kommunikation, pünktlicher Start, und das Bad sieht aus wie in der Visualisierung.", "rating": 5 },
+          { "name": "Malte Jensen", "city": "Eppendorf", "date": "vor 3 Monaten", "text": "Ein Ansprechpartner statt fünf Firmen. Die Küche war in acht Wochen fertig.", "rating": 5 },
+          { "name": "Parisa Noori", "city": "Winterhude", "date": "vor 5 Monaten", "text": "Fördermittel komplett mitübernommen.", "rating": 5 },
+          { "name": "Henning Bruns", "city": "Altona", "date": "vor 6 Monaten", "text": "Saubere Baustelle, klare Meilensteine. Die Wärmedämmung hat den Altbau spürbar ruhiger gemacht.", "rating": 5 },
+          { "name": "Saskia Holm", "city": "Eimsbüttel", "date": "vor 8 Monaten", "text": "Vom ersten Gespräch bis zur Übergabe ein fester Ansprechpartner.", "rating": 5 },
+          { "name": "Jonas Kröger", "city": "Hamburg-Nord", "date": "vor 11 Monaten", "text": "Elektrik, Boden und Bad aus einer Hand. Termine haben gehalten.", "rating": 5 }
+        ]
+      },
+      {
+        "type": "quality",
+        "title": "Hinter den Kulissen: Qualität in Echtzeit",
+        "subtitle": "Wöchentliche Fotos, klare Meilensteine, dokumentierte Abnahmen.",
+        "image": "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1400&q=80"
+      },
+      {
+        "type": "team",
+        "title": "Ihr Expertenteam",
+        "subtitle": "Ruhige, hochwertige Sanierung mit klaren Zusagen — deutschlandweit.",
+        "items": [
+          { "name": "Mira Ellermann", "role": "Gründerin", "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" },
+          { "name": "Jonas Bergmann", "role": "Gründer", "image": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80" },
+          { "name": "Lena Krüger", "role": "Geschäftsführung", "image": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80" },
+          { "name": "Tarik Yilmaz", "role": "Beratung", "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" },
+          { "name": "Sofia Brandt", "role": "Architektin", "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80" },
+          { "name": "Henrik Vogt", "role": "Projektleiter", "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80" },
+          { "name": "Nora Lindberg", "role": "Projektleiterin", "image": "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80" },
+          { "name": "Emre Sahin", "role": "Bauleitung", "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80" }
+        ]
+      },
+      {
+        "type": "before_after",
+        "title": "Vorher–Nachher Projekte",
+        "items": [
+          { "title": "Altbauwohnungen Hamburg-Eimsbüttel", "area": "78 m²", "duration": "11 Wochen", "kind": "Komplettsanierung", "city": "Hamburg" },
+          { "title": "Stadthaus Köln-Sülz", "area": "110 m²", "duration": "14 Wochen", "kind": "Komplettsanierung", "city": "Köln" },
+          { "title": "Etagenwohnung München-Schwabing", "area": "71 m²", "duration": "9 Wochen", "kind": "Wohnraum-Renovierung", "city": "München" }
+        ]
+      },
+      {
+        "type": "financing",
+        "title": "Finanzierungsrechner",
+        "subtitle": "Ungefähre monatliche Rate für Ihr Sanierungsvorhaben."
+      },
+      {
+        "type": "process",
+        "title": "Ihr Weg zum neuen Zuhause",
+        "items": [
+          { "title": "Kostenlose Beratung", "description": "Ziele, Budget und Zeitplan klären wir unverbindlich." },
+          { "title": "3D & Festpreisangebot", "description": "Visualisierung mit transparentem Festpreis." },
+          { "title": "Baustart nach Zusage", "description": "Vertraglich zugesicherter Start." },
+          { "title": "Schlüsselfertige Übergabe", "description": "Fertig, gereinigt, dokumentiert." }
+        ]
+      },
+      {
+        "type": "faq",
+        "title": "Häufig gestellte Fragen",
+        "items": [
+          { "question": "Was bedeutet schlüsselfertig bei VELORA?", "answer": "Planung, Gewerke, Material, Bauleitung und Endreinigung liegen bei uns." },
+          { "question": "Wie verbindlich ist der Festpreis?", "answer": "Der Preis im Angebot ist der Preis, den Sie zahlen. Materialsteigerungen tragen wir." },
+          { "question": "Arbeiten Sie nur in Hamburg?", "answer": "Hauptsitz ist Hamburg, Projekte führen wir bundesweit — mit Teams in Köln und München." },
+          { "question": "Übernehmt ihr die Förderanträge?", "answer": "Ja. Wir prüfen Programme, bereiten Unterlagen vor und begleiten die Einreichung." },
+          { "question": "Kann ich während der Bauzeit wohnen bleiben?", "answer": "Bei Teilmaßnahmen oft ja. Bei Komplettsanierung planen wir Auszugfenster mit Ihnen." },
+          { "question": "Wie lange dauert eine typische Wohnungssanierung?", "answer": "Je nach Fläche und Tiefe zwischen 8 und 16 Wochen." }
+        ]
+      },
+      {
+        "type": "working_hours",
+        "items": [
+          { "days": "Montag – Freitag", "hours": "08:00 – 18:00" },
+          { "days": "Samstag", "hours": "09:00 – 14:00" },
+          { "days": "Sonntag", "hours": "geschlossen" }
+        ]
+      },
+      {
+        "type": "contact",
+        "title": "Kontakt & Standorte",
+        "coverage": "In ganz Deutschland",
+        "hqAddress": "Große Bleichen 31, 20354 Hamburg",
+        "mapQuery": "Große Bleichen 31, 20354 Hamburg",
+        "items": [
+          { "name": "VELORA Hamburg", "address": "Große Bleichen 31, 20354 Hamburg" },
+          { "name": "VELORA Köln", "address": "Hohenzollernring 22, 50672 Köln" },
+          { "name": "VELORA München", "address": "Türkenstraße 84, 80799 München" }
+        ]
+      },
+      {
+        "type": "materials",
+        "title": "Materialien, die wir einsetzen",
+        "subtitle": "Eine Auswahl typischer Qualitäten — immer abgestimmt auf Grundriss, Licht und Alltag.",
+        "items": [
+          { "title": "Eiche Laminat Natur", "spec": "1.292 × 193 × 8 mm" },
+          { "title": "Sockelleiste Kiefer", "spec": "lackiert, 240 × 1,8 × 5,8 cm" },
+          { "title": "Dämmunterlage Basic", "spec": "grau, 25 m², 1,2 mm" },
+          { "title": "Raufasertapete mittel", "spec": "weiß, 33 × 0,53 m" },
+          { "title": "Wandfarbe Dispersion", "spec": "stumpfmatt, 10 l" },
+          { "title": "Feinsteinzeug 60×60", "spec": "matt, rutschhemmend" },
+          { "title": "Zimmertür Röhrenspan", "spec": "weiß, 885 × 2.005 mm" },
+          { "title": "Türgriff Edelstahl", "spec": "zweiteilig, Buntbart" }
+        ]
+      },
+      {
+        "type": "footer",
+        "about": "Wir schaffen Räume, die ruhig wirken und den Alltag tragen."
+      },
+      { "type": "quote", "enabled": true, "title": "Kostenlose Beratung anfragen" }
+    ]
+  },
+  "theme_config": {
+    "theme": "services",
+    "template": "handwerk-base",
+    "primaryColor": "#C45C26",
+    "secondaryColor": "#1E3A2F"
+  }
+}

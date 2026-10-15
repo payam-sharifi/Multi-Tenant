@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { allowedImageHosts } from "./lib/image-hosts";
+import { allowedImageHosts } from "./src/lib/image-hosts";
 
 const nextConfig: NextConfig = {
   images: {

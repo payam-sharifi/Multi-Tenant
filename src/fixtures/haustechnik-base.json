@@ -1,0 +1,82 @@
+{
+  "site_data": {
+    "business_name": "Nordlicht Haustechnik",
+    "legal_name": "Nordlicht Haustechnik GmbH",
+    "tagline": "Heizung · Sanitär · Notdienst",
+    "phone": "089 123 45 67",
+    "email": "info@nordlicht-haustechnik.de",
+    "address": "Musterstraße 14, 80331 München",
+    "emergency_hours": "24/7 Notdienst",
+    "working_hours": "Mo–Fr 07:30–18:00 · Sa 09:00–13:00",
+    "about": "Nordlicht Haustechnik GmbH ist ein inhabergeführter Meisterbetrieb in München. Seit über 25 Jahren betreuen wir Haushalte und Immobilien mit klaren Zusagen – von der Heizungswartung bis zum kompletten Traumbad.",
+    "sections": [
+      {
+        "type": "hero",
+        "eyebrow": "Heizung & Sanitär · München",
+        "title": "Ihr zuverlässiger Partner für Heizung & Sanitär",
+        "subtitle": "Von der Badmodernisierung bis zur Notfall-Reparatur – Schnell, transparent und regional in Ihrer Nähe.",
+        "highlights": ["Meisterbetrieb", "Festpreis vor Start", "Regional in München"]
+      },
+      {
+        "type": "services",
+        "eyebrow": "Leistungen",
+        "title": "Unsere Leistungen",
+        "subtitle": "Ob geplante Modernisierung oder akuter Schaden: Sie sprechen mit einem festen Ansprechpartner – und wir kümmern uns um den Rest.",
+        "items": [
+          {
+            "id": "heizung",
+            "title": "Heizung & Energiesparen",
+            "description": "Wärmepumpen, moderne Heizkessel und hydraulischer Abgleich – für spürbar niedrigere Energiekosten und zuverlässige Wärme im ganzen Haus.",
+            "points": ["Wärmepumpe & Brennwerttechnik", "Wartung und Optimierung", "Fördermittel-Beratung"]
+          },
+          {
+            "id": "bad",
+            "title": "Badmodernisierung",
+            "description": "Ihr Traumbad aus einer Hand: Planung, Sanitär, Fliesenabstimmung und Fertigstellung – ohne Koordinationsaufwand für Sie.",
+            "points": ["Komplettbad schlüsselfertig", "Barrierefreie Lösungen", "Feste Termine & Festpreis"]
+          },
+          {
+            "id": "sanitaer",
+            "title": "Sanitärinstallation & Reparatur",
+            "description": "Neuinstallation, Leckagen und alltägliche Reparaturen erledigen wir sauber, fachgerecht und mit klarer Kommunikation vor Ort.",
+            "points": ["Installation & Austausch", "Undichtigkeiten", "Wartungsverträge"]
+          },
+          {
+            "id": "notdienst",
+            "title": "24/7 Notdienst",
+            "description": "Rohrbruch oder Heizungsausfall? Unser Notdienst ist rund um die Uhr erreichbar – schnell vor Ort, transparent im Preis.",
+            "points": ["Rohrbruch & Wasserschaden", "Heizungsausfall", "Kurze Anfahrtszeiten"],
+            "featured": true
+          }
+        ]
+      },
+      {
+        "type": "benefits",
+        "items": [
+          {
+            "title": "Faire & transparente Preise",
+            "description": "Sie erhalten ein verständliches Angebot vor Arbeitsbeginn. Keine versteckten Positionen, keine Überraschungen auf der Rechnung."
+          },
+          {
+            "title": "Zertifizierter Meisterbetrieb",
+            "description": "Als eingetragener Meisterbetrieb arbeiten wir nach Handwerksordnung – geprüft, versichert und nachvollziehbar dokumentiert."
+          },
+          {
+            "title": "Pünktlich & Zuverlässig",
+            "description": "Vereinbarte Termine gelten. Unser Team erscheint vorbereitet, hält den Zeitplan ein und hinterlässt die Baustelle ordentlich."
+          }
+        ]
+      },
+      {
+        "type": "reviews",
+        "rating": "4,9",
+        "count": "120+",
+        "source": "Google-Bewertungen"
+      }
+    ]
+  },
+  "theme_config": {
+    "theme": "services",
+    "template": "haustechnik-base"
+  }
+}
