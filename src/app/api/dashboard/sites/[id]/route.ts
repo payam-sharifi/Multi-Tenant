@@ -4,7 +4,7 @@ import { fillTemplateWithSiteData } from '@/lib/merge-site-json';
 import { readTemplateFixture } from '@/lib/template-dashboard';
 import { deleteWebsite, getWebsiteById, listWebsites, updateWebsite } from '@/lib/tenant';
 import { applySiteFields, sanitizeSubdomain, type SiteFields } from '@/lib/website-admin';
-import { isTemplateId, resolveTemplateId } from '@/templates/registry';
+import { DEFAULT_TEMPLATE_ID, isTemplateId } from '@/templates/registry';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -26,13 +26,12 @@ export async function GET(
 
   const requested = new URL(request.url).searchParams.get('template') || '';
   const theme = asRecord(current.theme_config) ?? {};
+  const fromTheme = typeof theme.templateId === 'string' ? theme.templateId : '';
   const templateId = isTemplateId(requested)
     ? requested
-    : resolveTemplateId({
-        templateId: typeof theme.templateId === 'string' ? theme.templateId : undefined,
-        businessCategory: typeof theme.businessCategory === 'string' ? theme.businessCategory : undefined,
-        businessType: current.business_type || undefined,
-      });
+    : isTemplateId(fromTheme)
+      ? fromTheme
+      : DEFAULT_TEMPLATE_ID;
 
   const fixture = await readTemplateFixture(templateId);
   const siteData = fillTemplateWithSiteData(fixture, current.site_data);

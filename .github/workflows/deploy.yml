@@ -21,7 +21,6 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           timeout: 5m
-          script_stop: true
           script: |
             set -euo pipefail
             cd /easysitebuilder/Multi-Tenant
