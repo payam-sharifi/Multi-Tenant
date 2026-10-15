@@ -23,6 +23,60 @@ function firstNonEmpty(...values: (string | undefined)[]): string {
   return "";
 }
 
+type HeroStat = { value: string; label: string };
+
+function sameStatKey(a: string, b: string): boolean {
+  return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
+
+/** Overlay one or more hero stats onto the existing list by label (or value). A single edited row must not wipe the rest. */
+function mergeStatItems(
+  provided: { value?: string; label?: string }[] | undefined,
+  fallback: HeroStat[],
+): HeroStat[] {
+  const incoming = (provided ?? [])
+    .map((item) => ({
+      value: item.value?.trim() ?? "",
+      label: item.label?.trim() ?? "",
+    }))
+    .filter((item) => item.value || item.label);
+  const complete = incoming.filter((item): item is HeroStat => Boolean(item.value && item.label));
+
+  if (!incoming.length) return fallback;
+  if (!fallback.length) return complete;
+
+  const matchesFallback = (item: { value: string; label: string }) =>
+    fallback.some(
+      (stat) =>
+        (item.label && sameStatKey(stat.label, item.label)) ||
+        (item.value && sameStatKey(stat.value, item.value)),
+    );
+  const isPatch =
+    incoming.length < fallback.length ||
+    incoming.some((item) => !item.value || !item.label) ||
+    incoming.every(matchesFallback);
+
+  if (!isPatch) return complete;
+
+  const result = fallback.map((item) => ({ ...item }));
+  for (const item of incoming) {
+    const index = result.findIndex(
+      (stat) =>
+        (item.label && sameStatKey(stat.label, item.label)) ||
+        (item.value && sameStatKey(stat.value, item.value)),
+    );
+    if (index >= 0) {
+      result[index] = {
+        value: item.value || result[index].value,
+        label: item.label || result[index].label,
+      };
+    } else if (item.value && item.label) {
+      result.push(item);
+    }
+  }
+  return result.filter((item) => item.value && item.label).slice(0, 4);
+}
+
 export type HandwerkDict = Omit<
   Dict,
   | "contact"
@@ -368,16 +422,7 @@ function buildDict(
         : sample
           ? base.hero.bullets
           : [],
-      stats: hj?.stats?.length
-        ? hj.stats
-            .filter((item) => item.value && item.label)
-            .map((item) => ({
-              value: item.value ?? "",
-              label: item.label ?? "",
-            }))
-        : sample
-          ? base.hero.stats
-          : [],
+      stats: mergeStatItems(hj?.stats, sample ? base.hero.stats : []),
       image: hj?.image ?? (sample ? IMAGES.hero : ""),
     },
     services: {
