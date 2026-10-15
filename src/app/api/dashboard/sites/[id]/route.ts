@@ -1,7 +1,48 @@
 import { NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/require-admin';
+import { fillTemplateWithSiteData } from '@/lib/merge-site-json';
+import { readTemplateFixture } from '@/lib/template-dashboard';
 import { deleteWebsite, getWebsiteById, listWebsites, updateWebsite } from '@/lib/tenant';
 import { applySiteFields, sanitizeSubdomain, type SiteFields } from '@/lib/website-admin';
+import { isTemplateId, resolveTemplateId } from '@/templates/registry';
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const denied = await requireAdminApi();
+  if (denied) return denied;
+  const { id } = await params;
+  const current = await getWebsiteById(id);
+  if (!current) {
+    return NextResponse.json({ error: 'سایت پیدا نشد' }, { status: 404 });
+  }
+
+  const requested = new URL(request.url).searchParams.get('template') || '';
+  const theme = asRecord(current.theme_config) ?? {};
+  const templateId = isTemplateId(requested)
+    ? requested
+    : resolveTemplateId({
+        templateId: typeof theme.templateId === 'string' ? theme.templateId : undefined,
+        businessCategory: typeof theme.businessCategory === 'string' ? theme.businessCategory : undefined,
+        businessType: current.business_type || undefined,
+      });
+
+  const fixture = await readTemplateFixture(templateId);
+  const siteData = fillTemplateWithSiteData(fixture, current.site_data);
+
+  return NextResponse.json({
+    id: current.id,
+    templateId,
+    siteData,
+  });
+}
 
 function asFields(body: unknown): SiteFields | null {
   if (!body || typeof body !== 'object') return null;
@@ -36,6 +77,19 @@ export async function PATCH(
     body = await request.json();
   } catch {
     return NextResponse.json({ error: 'بدنهٔ درخواست نامعتبر است' }, { status: 400 });
+  }
+
+  const payload = asRecord(body);
+  if (payload && 'siteData' in payload) {
+    const siteData = payload.siteData;
+    if (!siteData || typeof siteData !== 'object' || Array.isArray(siteData)) {
+      return NextResponse.json({ error: 'جیسون باید یک آبجکت باشد' }, { status: 400 });
+    }
+    const updated = await updateWebsite(id, { site_data: siteData });
+    if (!updated) {
+      return NextResponse.json({ error: 'ذخیره نشد' }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true, site: updated, siteData: updated.site_data });
   }
 
   const fields = asFields(body);

@@ -44,6 +44,7 @@ export function SiteEditor({ templateId, fixture, tenants }: Props) {
   const [page, setPage] = useState(0);
   const [draft, setDraft] = useState<TemplateTenant | null>(null);
   const [jsonOpen, setJsonOpen] = useState(false);
+  const [jsonSite, setJsonSite] = useState<TemplateTenant | null>(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState('');
@@ -167,23 +168,38 @@ export function SiteEditor({ templateId, fixture, tenants }: Props) {
     }
   }
 
-  const jsonModal = jsonOpen ? (
-    <div className="fixed inset-0 z-40 flex items-end justify-center bg-zinc-900/40 p-4 sm:items-center">
-      <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl">
-        <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-lg font-black">جیسون قالب</h3>
-          <button
-            type="button"
-            onClick={() => setJsonOpen(false)}
-            className="text-sm font-bold text-zinc-500 hover:text-zinc-800"
-          >
-            بستن
-          </button>
+  const jsonModal =
+    jsonOpen || jsonSite ? (
+      <div className="fixed inset-0 z-40 flex items-end justify-center bg-zinc-900/40 p-4 sm:items-center">
+        <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-lg font-black">
+              {jsonSite ? `جیسون قالب · ${jsonSite.name}` : 'جیسون قالب'}
+            </h3>
+            <button
+              type="button"
+              onClick={() => {
+                setJsonOpen(false);
+                setJsonSite(null);
+              }}
+              className="text-sm font-bold text-zinc-500 hover:text-zinc-800"
+            >
+              بستن
+            </button>
+          </div>
+          {jsonSite ? (
+            <TemplateJsonEditor
+              key={jsonSite.id}
+              templateId={templateId}
+              siteId={jsonSite.id}
+              siteLabel={jsonSite.subdomain || jsonSite.name}
+            />
+          ) : (
+            <TemplateJsonEditor templateId={templateId} initialValue={fixture} />
+          )}
         </div>
-        <TemplateJsonEditor templateId={templateId} initialValue={fixture} />
       </div>
-    </div>
-  ) : null;
+    ) : null;
 
   if (!items.length) {
     return (
@@ -249,7 +265,7 @@ export function SiteEditor({ templateId, fixture, tenants }: Props) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setJsonOpen(true)}
+                      onClick={() => setJsonSite(tenant)}
                       className="rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-700 hover:border-zinc-400"
                     >
                       جیسون قالب

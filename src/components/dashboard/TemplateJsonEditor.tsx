@@ -1,10 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type JsonEditorProps = {
   templateId: string;
-  initialValue: unknown;
+  initialValue?: unknown;
+  siteId?: string;
+  siteLabel?: string;
 };
 
 type JsonRecord = Record<string, unknown>;
@@ -198,13 +200,49 @@ function TreeNode({
   );
 }
 
-export function TemplateJsonEditor({ templateId, initialValue }: JsonEditorProps) {
-  const [data, setData] = useState<unknown>(() => cloneJson(initialValue));
-  const [raw, setRaw] = useState(() => pretty(initialValue));
+export function TemplateJsonEditor({ templateId, initialValue, siteId, siteLabel }: JsonEditorProps) {
+  const [data, setData] = useState<unknown>(() => cloneJson(initialValue ?? {}));
+  const [raw, setRaw] = useState(() => pretty(initialValue ?? {}));
   const [mode, setMode] = useState<'tree' | 'raw'>('tree');
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(Boolean(siteId));
+
+  useEffect(() => {
+    if (!siteId) return;
+    let cancelled = false;
+    async function loadSite() {
+      setLoading(true);
+      setError('');
+      setStatus('');
+      try {
+        const response = await fetch(
+          `/api/dashboard/sites/${siteId}?template=${encodeURIComponent(templateId)}`,
+        );
+        const payload = (await response.json()) as { siteData?: unknown; error?: string };
+        if (cancelled) return;
+        if (!response.ok) {
+          setError(payload.error || 'دیتای سایت بارگذاری نشد');
+          setLoading(false);
+          return;
+        }
+        const next = payload.siteData ?? {};
+        setData(cloneJson(next));
+        setRaw(pretty(next));
+        setLoading(false);
+      } catch {
+        if (!cancelled) {
+          setError('ارتباط با سرور برقرار نشد');
+          setLoading(false);
+        }
+      }
+    }
+    void loadSite();
+    return () => {
+      cancelled = true;
+    };
+  }, [siteId, templateId]);
 
   const parsedRaw = useMemo(() => {
     try {
@@ -242,11 +280,17 @@ export function TemplateJsonEditor({ templateId, initialValue }: JsonEditorProps
     setStatus('');
     setError('');
     try {
-      const response = await fetch(`/api/templates/${templateId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fixture: next }),
-      });
+      const response = siteId
+        ? await fetch(`/api/dashboard/sites/${siteId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ siteData: next }),
+          })
+        : await fetch(`/api/templates/${templateId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fixture: next }),
+          });
       const payload = (await response.json()) as { error?: string };
       if (!response.ok) {
         setError(payload.error || 'ذخیره نشد');
@@ -267,7 +311,9 @@ export function TemplateJsonEditor({ templateId, initialValue }: JsonEditorProps
         <div>
           <h2 className="text-lg font-extrabold">جیسون قالب</h2>
           <p className="mt-1 text-sm text-zinc-500">
-            فیلد اضافه یا حذف کن. اگر راحت‌تری، متن خام جیسون را باز کن.
+            {siteId
+              ? `قالب کامل با دادهٔ همین سایت${siteLabel ? ` (${siteLabel})` : ''} از دیتابیس. بخش‌های خالی را همین‌جا پر کن تا روی سایت دیده شوند.`
+              : 'فیلد اضافه یا حذف کن. اگر راحت‌تری، متن خام جیسون را باز کن.'}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -297,7 +343,7 @@ export function TemplateJsonEditor({ templateId, initialValue }: JsonEditorProps
           <button
             type="button"
             onClick={save}
-            disabled={saving}
+            disabled={saving || loading}
             className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-bold text-white hover:bg-zinc-700 disabled:opacity-60"
           >
             {saving ? 'در حال ذخیره...' : 'ذخیره جیسون'}
@@ -307,32 +353,35 @@ export function TemplateJsonEditor({ templateId, initialValue }: JsonEditorProps
 
       {error ? <p className="mt-3 text-sm font-semibold text-rose-600">{error}</p> : null}
       {status ? <p className="mt-3 text-sm font-semibold text-emerald-700">{status}</p> : null}
+      {loading ? <p className="mt-3 text-sm text-zinc-500">در حال بارگذاری دیتای سایت...</p> : null}
 
-      <div className="mt-4">
-        {mode === 'raw' ? (
-          <textarea
-            value={raw}
-            onChange={(event) => {
-              setRaw(event.target.value);
-              setStatus('');
-              setError('');
-            }}
-            spellCheck={false}
-            className="min-h-[32rem] w-full rounded-xl border border-zinc-200 bg-zinc-50 p-4 font-mono text-xs leading-relaxed text-zinc-800"
-            dir="ltr"
-          />
-        ) : (
-          <TreeNode
-            value={data}
-            path={[]}
-            label="root"
-            onChange={(path, next) => {
-              const updated = path.length === 0 ? next : setAtPath(data, path, next);
-              applyTree(updated);
-            }}
-          />
-        )}
-      </div>
+      {loading ? null : (
+        <div className="mt-4">
+          {mode === 'raw' ? (
+            <textarea
+              value={raw}
+              onChange={(event) => {
+                setRaw(event.target.value);
+                setStatus('');
+                setError('');
+              }}
+              spellCheck={false}
+              className="min-h-[32rem] w-full rounded-xl border border-zinc-200 bg-zinc-50 p-4 font-mono text-xs leading-relaxed text-zinc-800"
+              dir="ltr"
+            />
+          ) : (
+            <TreeNode
+              value={data}
+              path={[]}
+              label="root"
+              onChange={(path, next) => {
+                const updated = path.length === 0 ? next : setAtPath(data, path, next);
+                applyTree(updated);
+              }}
+            />
+          )}
+        </div>
+      )}
     </section>
   );
 }
