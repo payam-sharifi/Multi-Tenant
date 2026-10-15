@@ -21,12 +21,14 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           timeout: 5m
+          script_stop: true
           script: |
+            set -euo pipefail
             cd /easysitebuilder/Multi-Tenant
             git stash
-            git pull 
-            npm install 
+            git pull
+            npm install
             npm run build -- --webpack
-            pm2 delete Multi-Tenant || true
-            PORT=3001 pm2 start /easysitebuilder/Multi-Tenant/node_modules/next/dist/bin/next --name "Multi-Tenant" -- start
+            PORT=3001 pm2 restart Multi-Tenant --update-env || \
+              PORT=3001 pm2 start /easysitebuilder/Multi-Tenant/node_modules/next/dist/bin/next --name "Multi-Tenant" -- start
             pm2 save

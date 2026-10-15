@@ -2,7 +2,12 @@
 
 import { createContext, useContext, useMemo } from "react";
 import type { Locale } from "@/lib/i18n/config";
-import type { ClinicBaseContent } from "@/lib/types/clinic-base";
+import type {
+  ClinicBaseContent,
+  ClinicBranchContent,
+  ClinicDoctorContent,
+  ClinicPlanContent,
+} from "@/lib/types/clinic-base";
 import { BookingProvider } from "@/templates/clinic-base/booking";
 import { dictionaries, tenantTexts, type Dict } from "@/templates/clinic-base/content";
 import {
@@ -103,26 +108,6 @@ export type ClinicDict = Omit<B, "services" | "hero" | "checkup" | "about" | "do
 
 function pick<T>(value: T | undefined, fallback: T): T {
   return value === undefined ? fallback : value;
-}
-
-function mergeList<P, D, V>(
-  provided: P[] | undefined,
-  defaults: readonly D[],
-  make: (p: P | undefined, d: D | undefined, index: number) => V | null,
-): V[] {
-  const out: V[] = [];
-  if (provided && provided.length) {
-    provided.forEach((p, i) => {
-      const view = make(p, undefined, i);
-      if (view) out.push(view);
-    });
-  } else {
-    defaults.forEach((d, i) => {
-      const view = make(undefined, d, i);
-      if (view) out.push(view);
-    });
-  }
-  return out;
 }
 
 function sameKey(a: string, b: string): boolean {
@@ -329,35 +314,26 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
 
   /* doctors */
   const dj = content.doctors;
+  const mapDoctor = (p: ClinicDoctorContent | undefined, d: (typeof defaultDoctors)[number] | undefined, i: number): ClinicDoctorView | null => {
+    const name = p?.name ?? (p ? undefined : d?.name);
+    if (!name) return null;
+    return {
+      id: p?.id ?? d?.id ?? `doctor-${i + 1}`,
+      name,
+      spec: p?.specialty ?? (d ? base.doctors.specs[d.specIndex] : ""),
+      rating: p?.rating ?? d?.rating,
+      years: p?.years ?? d?.years,
+      image: p?.image ?? d?.image ?? (sample ? defaultDoctors[i % defaultDoctors.length].image : ""),
+      serviceIndex: p ? serviceIndexOf(p.serviceId) : safeIndex(d?.serviceIndex),
+    };
+  };
   const doctorItems: ClinicDoctorView[] = !present.doctors
     ? []
     : overlayByKey(
-        mergeList(dj?.items, [], (p, d, i) => {
-          const name = p?.name ?? (p ? undefined : d?.name);
-          if (!name) return null;
-          return {
-            id: p?.id ?? d?.id ?? `doctor-${i + 1}`,
-            name,
-            spec: p?.specialty ?? (d ? base.doctors.specs[d.specIndex] : ""),
-            rating: p?.rating ?? d?.rating,
-            years: p?.years ?? d?.years,
-            image: p?.image ?? d?.image ?? (sample ? defaultDoctors[i % defaultDoctors.length].image : ""),
-            serviceIndex: p ? serviceIndexOf(p.serviceId) : safeIndex(d?.serviceIndex),
-          };
-        }),
-        mergeList(undefined, defs(defaultDoctors), (p, d, i) => {
-          const name = p?.name ?? d?.name;
-          if (!name) return null;
-          return {
-            id: p?.id ?? d?.id ?? `doctor-${i + 1}`,
-            name,
-            spec: p?.specialty ?? (d ? base.doctors.specs[d.specIndex] : ""),
-            rating: p?.rating ?? d?.rating,
-            years: p?.years ?? d?.years,
-            image: p?.image ?? d?.image ?? (sample ? defaultDoctors[i % defaultDoctors.length].image : ""),
-            serviceIndex: p ? serviceIndexOf(p.serviceId) : safeIndex(d?.serviceIndex),
-          };
-        }),
+        (dj?.items ?? []).map((item, i) => mapDoctor(item, undefined, i)).filter((item): item is ClinicDoctorView => Boolean(item)),
+        defs(defaultDoctors)
+          .map((item, i) => mapDoctor(undefined, item, i))
+          .filter((item): item is ClinicDoctorView => Boolean(item)),
         (item) => item.name,
       );
 
@@ -377,7 +353,7 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
 
   /* checkup */
   const cj = content.checkup;
-  const makePlan = (p: (typeof cj)["plans"] extends (infer I)[] | undefined ? I : never, d: (typeof base.checkup.plans)[number] | undefined, i: number): ClinicPlanView | null => {
+  const mapPlan = (p: ClinicPlanContent | undefined, d: Dict["checkup"]["plans"][number] | undefined, i: number): ClinicPlanView | null => {
     const name = p?.name ?? (p ? undefined : d?.name);
     if (!name) return null;
     const meta = defaultCheckupMeta[i];
@@ -394,24 +370,29 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
     };
   };
   const plans: ClinicPlanView[] = overlayByKey(
-    mergeList(cj?.plans, [], makePlan),
-    mergeList(undefined, defs(base.checkup.plans), makePlan),
+    (cj?.plans ?? []).map((item, i) => mapPlan(item, undefined, i)).filter((item): item is ClinicPlanView => Boolean(item)),
+    defs(base.checkup.plans)
+      .map((item, i) => mapPlan(undefined, item, i))
+      .filter((item): item is ClinicPlanView => Boolean(item)),
     (item) => item.name,
   );
 
   /* about */
   const aj = content.about;
+  const mapValue = (
+    p: { title?: string; desc?: string; icon?: string } | undefined,
+    d: Dict["about"]["values"][number] | undefined,
+    i: number,
+  ) => {
+    const title = p?.title ?? d?.title;
+    if (!title) return null;
+    return { title, desc: p?.desc ?? d?.desc ?? "", icon: p?.icon ?? defaultValueIcons[i] ?? "award" };
+  };
   const values = overlayByKey(
-    mergeList(aj?.values, [], (p, d, i) => {
-      const title = p?.title ?? d?.title;
-      if (!title) return null;
-      return { title, desc: p?.desc ?? d?.desc ?? "", icon: p?.icon ?? defaultValueIcons[i] ?? "award" };
-    }),
-    mergeList(undefined, defs(base.about.values), (p, d, i) => {
-      const title = p?.title ?? d?.title;
-      if (!title) return null;
-      return { title, desc: p?.desc ?? d?.desc ?? "", icon: p?.icon ?? defaultValueIcons[i] ?? "award" };
-    }),
+    (aj?.values ?? []).map((item, i) => mapValue(item, undefined, i)).filter((item): item is NonNullable<typeof item> => Boolean(item)),
+    defs(base.about.values)
+      .map((item, i) => mapValue(undefined, item, i))
+      .filter((item): item is NonNullable<typeof item> => Boolean(item)),
     (item) => item.title,
   );
   const aboutStats = mergeAboutStats(aj?.stats, defs(base.about.stats));
@@ -420,52 +401,38 @@ export function buildClinicDict(rawBase: Dict, content: ClinicBaseContent, local
   const lj = content.locations;
   const allServiceIndexes = serviceItems.map((_, index) => index);
   const branchPhone = content.contact?.phone ?? (sample ? PHONE : "");
+  const mapBranch = (p: ClinicBranchContent | undefined, d: (typeof defaultBranches)[number] | undefined, i: number): ClinicBranchView | null => {
+    const name = p?.name ?? (p ? undefined : d?.name);
+    if (!name) return null;
+    const phone = p?.phone ?? d?.phone ?? branchPhone;
+    const pin = autoPin(i);
+    const fromIds = p?.serviceIds
+      ?.map((id) => serviceIndexOf(id))
+      .filter((index): index is number => index !== undefined);
+    return {
+      id: p?.id ?? d?.id ?? `branch-${i + 1}`,
+      name,
+      address: p?.address ?? d?.address ?? "",
+      phone,
+      phoneHref: phone ? telHref(phone) : "",
+      hours: p?.hours ?? lj?.hours ?? content.contact?.hours ?? (sample ? base.locations.hours : ""),
+      image: p?.image ?? "",
+      x: p?.x ?? pin.x,
+      y: p?.y ?? pin.y,
+      services: fromIds?.length
+        ? fromIds
+        : p
+          ? allServiceIndexes
+          : (d?.services ?? []).filter((index) => serviceItems[index]),
+    };
+  };
   const branchItems: ClinicBranchView[] = !present.locations
     ? []
     : overlayByKey(
-        mergeList(lj?.items, [], (p, d, i) => {
-          const name = p?.name ?? (p ? undefined : d?.name);
-          if (!name) return null;
-          const phone = p?.phone ?? d?.phone ?? branchPhone;
-          const pin = autoPin(i);
-          const fromIds = p?.serviceIds
-            ?.map((id) => serviceIndexOf(id))
-            .filter((index): index is number => index !== undefined);
-          return {
-            id: p?.id ?? d?.id ?? `branch-${i + 1}`,
-            name,
-            address: p?.address ?? d?.address ?? "",
-            phone,
-            phoneHref: phone ? telHref(phone) : "",
-            hours: p?.hours ?? lj?.hours ?? content.contact?.hours ?? (sample ? base.locations.hours : ""),
-            image: p?.image ?? "",
-            x: p?.x ?? pin.x,
-            y: p?.y ?? pin.y,
-            services: fromIds?.length
-              ? fromIds
-              : p
-                ? allServiceIndexes
-                : (d?.services ?? []).filter((index) => serviceItems[index]),
-          };
-        }),
-        mergeList(undefined, defs(defaultBranches), (p, d, i) => {
-          const name = p?.name ?? d?.name;
-          if (!name) return null;
-          const phone = p?.phone ?? d?.phone ?? branchPhone;
-          const pin = autoPin(i);
-          return {
-            id: p?.id ?? d?.id ?? `branch-${i + 1}`,
-            name,
-            address: p?.address ?? d?.address ?? "",
-            phone,
-            phoneHref: phone ? telHref(phone) : "",
-            hours: p?.hours ?? lj?.hours ?? content.contact?.hours ?? (sample ? base.locations.hours : ""),
-            image: p?.image ?? "",
-            x: p?.x ?? pin.x,
-            y: p?.y ?? pin.y,
-            services: (d?.services ?? []).filter((index) => serviceItems[index]),
-          };
-        }),
+        (lj?.items ?? []).map((item, i) => mapBranch(item, undefined, i)).filter((item): item is ClinicBranchView => Boolean(item)),
+        defs(defaultBranches)
+          .map((item, i) => mapBranch(undefined, item, i))
+          .filter((item): item is ClinicBranchView => Boolean(item)),
         (item) => item.name,
       );
 
