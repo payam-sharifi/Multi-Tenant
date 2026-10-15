@@ -16,8 +16,10 @@ export function Contact() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const { fields, honeypot } = formDataToFields(event.currentTarget);
-    await submit(fields, honeypot);
+    const form = event.currentTarget;
+    const { fields, honeypot } = formDataToFields(form);
+    const ok = await submit(fields, honeypot);
+    if (ok) form.reset();
   }
 
   return (
