@@ -1,3 +1,4 @@
+import { createHmac } from 'crypto';
 import { getSupabase } from '@/lib/supabase';
 
 export const LEAD_KINDS = [
@@ -66,7 +67,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function asString(value: unknown): string {
-  return typeof value === 'string' ? value.trim() : '';
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return '';
 }
 
 export function isLeadKind(value: string): value is LeadKind {
@@ -206,7 +209,10 @@ export function formatLeadMessage(owner: Owner, payload: LeadPayload): string {
 
 async function sendTelegram(chatId: string, text: string): Promise<boolean> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
-  if (!token) return false;
+  if (!token) {
+    console.error('[leads] TELEGRAM_BOT_TOKEN missing; cannot notify owner');
+    return false;
+  }
 
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST',
@@ -254,6 +260,35 @@ async function sendWhatsApp(phone: string, text: string): Promise<boolean> {
     return false;
   }
   return true;
+}
+
+async function sendHermesWebhook(route: 'website-lead-telegram' | 'website-lead-whatsapp', chatId: string, text: string): Promise<boolean> {
+  const base = (process.env.HERMES_WEBHOOK_URL || '').replace(/\/$/, '');
+  const secret = process.env.HERMES_WEBHOOK_SECRET || process.env.WEBHOOK_SECRET || '';
+  if (!base || !chatId) return false;
+
+  const body = JSON.stringify({ chat_id: chatId, message: text });
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (secret) {
+    headers['X-Hub-Signature-256'] = `sha256=${createHmac('sha256', secret).update(body).digest('hex')}`;
+  }
+
+  try {
+    const response = await fetch(`${base}/webhooks/${route}`, {
+      method: 'POST',
+      headers,
+      body,
+    });
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      console.error('[leads] hermes webhook failed', route, response.status, detail.slice(0, 240));
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error('[leads] hermes webhook error', route, error);
+    return false;
+  }
 }
 
 export type LeadDelivery = {
@@ -311,11 +346,24 @@ export async function deliverLead(payload: LeadPayload): Promise<LeadDelivery> {
   const text = formatLeadMessage(owner, payload);
   const channels: Array<'telegram' | 'whatsapp'> = [];
 
-  if (owner.telegramId && (await sendTelegram(owner.telegramId, text))) {
-    channels.push('telegram');
+  if (owner.telegramId) {
+    const sent =
+      (await sendTelegram(owner.telegramId, text)) ||
+      (await sendHermesWebhook('website-lead-telegram', owner.telegramId, text));
+    if (sent) channels.push('telegram');
   }
-  if (owner.whatsappPhone && (await sendWhatsApp(owner.whatsappPhone, text))) {
-    channels.push('whatsapp');
+  if (owner.whatsappPhone) {
+    const sent =
+      (await sendWhatsApp(owner.whatsappPhone, text)) ||
+      (await sendHermesWebhook('website-lead-whatsapp', owner.whatsappPhone, text));
+    if (sent) channels.push('whatsapp');
+  }
+
+  if (owner.telegramId && !channels.includes('telegram')) {
+    console.error('[leads] telegram notify failed for', owner.subdomain);
+  }
+  if (owner.whatsappPhone && !channels.includes('whatsapp')) {
+    console.error('[leads] whatsapp notify failed for', owner.subdomain);
   }
 
   const leadId = await saveLead(owner, payload, text, channels);
