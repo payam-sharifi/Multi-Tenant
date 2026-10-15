@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarCheck, Clock, Menu, Phone, X } from "lucide-react";
+import { CalendarCheck, Clock, Mail, Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useBooking } from "@/templates/clinic-base/booking";
 import { sectionIds } from "@/templates/clinic-base/data";
@@ -118,6 +118,17 @@ export function Header() {
               </span>
             </a>
             )}
+            {t.contact.email && (
+            <a
+              href={`mailto:${t.contact.email}`}
+              className="group hidden items-center gap-3 rounded-full border border-brand-900/10 bg-white px-4 py-1.5 transition-colors hover:border-mint 2xl:flex"
+            >
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-mint-soft text-brand-900 transition-colors group-hover:bg-mint">
+                <Mail className="h-4 w-4" />
+              </span>
+              <span className="block text-sm font-bold text-brand-900">{t.contact.email}</span>
+            </a>
+            )}
 
             <LanguageSwitcher className="hidden lg:flex" id="desk" />
 
@@ -202,6 +213,17 @@ export function Header() {
                     {t.header.hours && <span className="block text-xs text-muted">{t.header.hours}</span>}
                     <span className="font-bold text-brand-900">{t.contact.phone}</span>
                   </span>
+                </a>
+                )}
+                {t.contact.email && (
+                <a
+                  href={`mailto:${t.contact.email}`}
+                  className="flex items-center gap-3 rounded-2xl bg-surface p-4"
+                >
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-mint text-brand-900">
+                    <Mail className="h-5 w-5" />
+                  </span>
+                  <span className="font-bold text-brand-900">{t.contact.email}</span>
                 </a>
                 )}
                 <Button

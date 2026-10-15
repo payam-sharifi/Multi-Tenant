@@ -12,8 +12,16 @@ export function Footer() {
         <div className="lg:col-span-2">
           <Logo light />
           {t.footer.about && <p className="mt-5 max-w-md text-sm text-[var(--hw-cream)]/70">{t.footer.about}</p>}
-          {t.contact.phone && <p className="mt-4 text-sm">{t.contact.phone}</p>}
-          {t.contact.email && <p className="text-sm">{t.contact.email}</p>}
+          {t.contact.phone && (
+            <p className="mt-4 text-sm">
+              <a href={t.contact.phoneHref}>{t.contact.phone}</a>
+            </p>
+          )}
+          {t.contact.email && (
+            <p className="text-sm">
+              <a href={`mailto:${t.contact.email}`}>{t.contact.email}</a>
+            </p>
+          )}
         </div>
         <div>
           <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--hw-clay)]">{t.footer.quick}</h2>

@@ -77,6 +77,42 @@ function mergeStatItems(
   return result.filter((item) => item.value && item.label).slice(0, 4);
 }
 
+function mergeStringList(provided: string[] | undefined, fallback: string[], limit = 6): string[] {
+  const incoming = (provided ?? []).map((item) => item.trim()).filter(Boolean);
+  if (!incoming.length) return fallback;
+  if (!fallback.length || incoming.length >= fallback.length) return incoming.slice(0, limit);
+  const result = [...fallback];
+  for (const item of incoming) {
+    if (!result.some((row) => sameStatKey(row, item))) result.push(item);
+  }
+  return result.slice(0, limit);
+}
+
+function overlayByKey<T extends object>(
+  incoming: T[],
+  fallback: T[],
+  keyOf: (item: T) => string,
+): T[] {
+  if (!incoming.length) return fallback;
+  if (!fallback.length) return incoming;
+  const key = (item: T) => keyOf(item).trim().toLowerCase();
+  const isPatch =
+    incoming.length < fallback.length &&
+    incoming.every((item) => {
+      const itemKey = key(item);
+      return Boolean(itemKey && fallback.some((row) => key(row) === itemKey));
+    });
+  if (!isPatch) return incoming;
+  const result = fallback.map((row) => ({ ...row }));
+  for (const item of incoming) {
+    const itemKey = key(item);
+    const index = result.findIndex((row) => key(row) === itemKey);
+    if (index >= 0) result[index] = { ...result[index], ...item };
+    else result.push({ ...item });
+  }
+  return result;
+}
+
 export type HandwerkDict = Omit<
   Dict,
   | "contact"
@@ -176,62 +212,70 @@ function buildDict(
     description: service.description,
     image: service.image ?? serviceImages[i % serviceImages.length],
   }));
-  const serviceItems = jsonServices.length
-    ? jsonServices.map((item, i) => ({
-        id: item.id ?? `service-${i + 1}`,
-        title: item.title ?? "",
-        description: item.description ?? "",
-        image: item.image ?? serviceImages[i % serviceImages.length],
-      }))
+  const sampleServices = base.services.items.map((item, i) => ({
+    id: `service-${i + 1}`,
+    ...item,
+    image: serviceImages[i],
+  }));
+  const mappedJsonServices = jsonServices.map((item, i) => ({
+    id: item.id ?? `service-${i + 1}`,
+    title: item.title ?? "",
+    description: item.description ?? "",
+    image: item.image ?? serviceImages[i % serviceImages.length],
+  }));
+  const serviceItems = mappedJsonServices.length
+    ? overlayByKey(mappedJsonServices, sample ? sampleServices : [], (item) => item.title)
     : sample
-      ? base.services.items.map((item, i) => ({
-          id: `service-${i + 1}`,
-          ...item,
-          image: serviceImages[i],
-        }))
+      ? sampleServices
       : fallbackServices;
 
-  const guaranteeItems = content.guarantees?.items?.length
-    ? content.guarantees.items
-        .filter((item) => item.title)
-        .map((item) => ({
-          title: item.title ?? "",
-          description: item.description ?? "",
-        }))
-    : defs(base.guarantees.items);
+  const guaranteeItems = overlayByKey(
+    (content.guarantees?.items ?? [])
+      .filter((item) => item.title)
+      .map((item) => ({
+        title: item.title ?? "",
+        description: item.description ?? "",
+      })),
+    defs(base.guarantees.items),
+    (item) => item.title,
+  );
 
   const projectImages = [IMAGES.project1, IMAGES.project2, IMAGES.project3];
-  const projectItems = content.projects?.items?.length
-    ? content.projects.items
-        .filter((item) => item.title)
-        .map((item, i) => ({
-          title: item.title ?? "",
-          image: item.image ?? projectImages[i % projectImages.length],
-          area: item.area ?? "",
-          duration: item.duration ?? "",
-          kind: item.kind ?? "",
-          city: item.city ?? "",
-        }))
-    : defs(base.projects.items).map((item, i) => ({
-        ...item,
-        image: projectImages[i],
-      }));
+  const projectItems = overlayByKey(
+    (content.projects?.items ?? [])
+      .filter((item) => item.title)
+      .map((item, i) => ({
+        title: item.title ?? "",
+        image: item.image ?? projectImages[i % projectImages.length],
+        area: item.area ?? "",
+        duration: item.duration ?? "",
+        kind: item.kind ?? "",
+        city: item.city ?? "",
+      })),
+    defs(base.projects.items).map((item, i) => ({
+      ...item,
+      image: projectImages[i],
+    })),
+    (item) => item.title,
+  );
 
-  const reviewItems = content.reviews?.items?.length
-    ? content.reviews.items
-        .filter((item) => item.text)
-        .map((item) => ({
-          name: item.name ?? "",
-          text: item.text ?? "",
-          rating: item.rating ?? 5,
-          source: item.source ?? base.reviews.source,
-          city: item.city ?? "",
-          date: item.date ?? "",
-        }))
-    : defs(base.reviews.items).map((item) => ({
-        ...item,
-        source: base.reviews.source,
-      }));
+  const reviewItems = overlayByKey(
+    (content.reviews?.items ?? [])
+      .filter((item) => item.text)
+      .map((item) => ({
+        name: item.name ?? "",
+        text: item.text ?? "",
+        rating: item.rating ?? 5,
+        source: item.source ?? base.reviews.source,
+        city: item.city ?? "",
+        date: item.date ?? "",
+      })),
+    defs(base.reviews.items).map((item) => ({
+      ...item,
+      source: base.reviews.source,
+    })),
+    (item) => item.name || item.text,
+  );
 
   const teamPhotos = [
     IMAGES.team1,
@@ -243,70 +287,82 @@ function buildDict(
     IMAGES.team7,
     IMAGES.team8,
   ];
-  const teamItems = content.team?.items?.length
-    ? content.team.items
-        .filter((item) => item.name)
-        .map((item, i) => ({
-          id: item.id ?? `member-${i + 1}`,
-          name: item.name ?? "",
-          role: item.role ?? "",
-          image: item.image ?? "",
-        }))
-    : defs(base.team.items).map((item, i) => ({
-        id: `member-${i + 1}`,
-        ...item,
-        image: teamPhotos[i],
-      }));
+  const teamItems = overlayByKey(
+    (content.team?.items ?? [])
+      .filter((item) => item.name)
+      .map((item, i) => ({
+        id: item.id ?? `member-${i + 1}`,
+        name: item.name ?? "",
+        role: item.role ?? "",
+        image: item.image ?? "",
+      })),
+    defs(base.team.items).map((item, i) => ({
+      id: `member-${i + 1}`,
+      ...item,
+      image: teamPhotos[i],
+    })),
+    (item) => item.name,
+  );
 
   const baImages = [IMAGES.living, IMAGES.kitchen, IMAGES.guest];
-  const beforeAfterItems = content.beforeAfter?.items?.length
-    ? content.beforeAfter.items
-        .filter((item) => item.title)
-        .map((item, i) => ({
-          title: item.title ?? "",
-          beforeImage: item.beforeImage ?? baImages[i % baImages.length],
-          afterImage: item.afterImage ?? baImages[i % baImages.length],
-          area: item.area ?? "",
-          duration: item.duration ?? "",
-          kind: item.kind ?? "",
-          city: item.city ?? "",
-        }))
-    : defs(base.beforeAfter.items).map((item, i) => ({
-        ...item,
-        beforeImage: baImages[i],
-        afterImage: projectImages[i],
-      }));
+  const beforeAfterItems = overlayByKey(
+    (content.beforeAfter?.items ?? [])
+      .filter((item) => item.title)
+      .map((item, i) => ({
+        title: item.title ?? "",
+        beforeImage: item.beforeImage ?? baImages[i % baImages.length],
+        afterImage: item.afterImage ?? baImages[i % baImages.length],
+        area: item.area ?? "",
+        duration: item.duration ?? "",
+        kind: item.kind ?? "",
+        city: item.city ?? "",
+      })),
+    defs(base.beforeAfter.items).map((item, i) => ({
+      ...item,
+      beforeImage: baImages[i],
+      afterImage: projectImages[i],
+    })),
+    (item) => item.title,
+  );
 
-  const processItems = content.process?.items?.length
-    ? content.process.items
-        .filter((item) => item.title)
-        .map((item) => ({
-          title: item.title ?? "",
-          description: item.description ?? "",
-        }))
-    : defs(base.process.items);
+  const processItems = overlayByKey(
+    (content.process?.items ?? [])
+      .filter((item) => item.title)
+      .map((item) => ({
+        title: item.title ?? "",
+        description: item.description ?? "",
+      })),
+    defs(base.process.items),
+    (item) => item.title,
+  );
 
-  const faqItems = content.faq?.items?.length
-    ? content.faq.items
-    : defs(base.faq.items);
+  const faqItems = overlayByKey(
+    content.faq?.items ?? [],
+    defs(base.faq.items),
+    (item) => item.question,
+  );
 
-  const locationItems = content.contactBlock?.items?.length
-    ? content.contactBlock.items
-        .filter((item) => item.name)
-        .map((item) => ({
-          name: item.name ?? "",
-          address: item.address ?? "",
-          phone: item.phone,
-        }))
-    : defs(base.contact.locations);
+  const locationItems = overlayByKey(
+    (content.contactBlock?.items ?? [])
+      .filter((item) => item.name)
+      .map((item) => ({
+        name: item.name ?? "",
+        address: item.address ?? "",
+        phone: item.phone,
+      })),
+    defs(base.contact.locations),
+    (item) => item.name,
+  );
 
-  const hoursRows = content.contactBlock?.hoursRows?.length
-    ? content.contactBlock.hoursRows
-        .filter((row) => row.days || row.hours)
-        .map((row) => ({ days: row.days ?? "", hours: row.hours ?? "" }))
-    : content.contact?.hours
+  const hoursRows = overlayByKey(
+    (content.contactBlock?.hoursRows ?? [])
+      .filter((row) => row.days || row.hours)
+      .map((row) => ({ days: row.days ?? "", hours: row.hours ?? "" })),
+    content.contact?.hours
       ? [{ days: "", hours: content.contact.hours }]
-      : defs(base.contact.hoursRows);
+      : defs(base.contact.hoursRows),
+    (row) => row.days,
+  );
 
   const materialImages = [
     IMAGES.material1,
@@ -318,21 +374,31 @@ function buildDict(
     IMAGES.material7,
     IMAGES.material8,
   ];
-  const materialItems = content.materials?.items?.length
-    ? content.materials.items
-        .filter((item) => item.title)
-        .map((item, i) => ({
-          title: item.title ?? "",
-          spec: item.spec ?? "",
-          image: item.image ?? materialImages[i % materialImages.length],
-        }))
-    : defs(base.materials.items).map((item, i) => ({
-        ...item,
-        image: materialImages[i],
-      }));
+  const materialItems = overlayByKey(
+    (content.materials?.items ?? [])
+      .filter((item) => item.title)
+      .map((item, i) => ({
+        title: item.title ?? "",
+        spec: item.spec ?? "",
+        image: item.image ?? materialImages[i % materialImages.length],
+      })),
+    defs(base.materials.items).map((item, i) => ({
+      ...item,
+      image: materialImages[i],
+    })),
+    (item) => item.title,
+  );
 
-  const phone = content.contact?.phone ?? (sample ? PHONE : "");
-  const email = content.contact?.email ?? (sample ? EMAIL : "");
+  const phone = firstNonEmpty(
+    content.contact?.phone,
+    content.contactBlock?.phone,
+    sample ? PHONE : "",
+  );
+  const email = firstNonEmpty(
+    content.contact?.email,
+    content.contactBlock?.email,
+    sample ? EMAIL : "",
+  );
   const hqAddress = pick(
     content.contactBlock?.hqAddress,
     sample ? base.contact.hqAddress : (content.contact?.address ?? ""),
@@ -417,11 +483,7 @@ function buildDict(
       subtitle: pick(hj?.subtitle, sample ? base.hero.subtitle : ""),
       ctaPrimary: pick(hj?.ctaPrimary, base.hero.ctaPrimary),
       ctaSecondary: pick(hj?.ctaSecondary, base.hero.ctaSecondary),
-      bullets: hj?.bullets?.length
-        ? hj.bullets
-        : sample
-          ? base.hero.bullets
-          : [],
+      bullets: mergeStringList(hj?.bullets, sample ? base.hero.bullets : []),
       stats: mergeStatItems(hj?.stats, sample ? base.hero.stats : []),
       image: hj?.image ?? (sample ? IMAGES.hero : ""),
     },

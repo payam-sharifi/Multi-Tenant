@@ -180,6 +180,8 @@ export type HandwerkContactContent = {
   hqLabel?: string;
   hqAddress?: string;
   formNote?: string;
+  phone?: string;
+  email?: string;
   hours?: string;
   hoursRows?: HandwerkHoursRow[];
   mapQuery?: string;

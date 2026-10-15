@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Clock, Menu, Phone, X } from "lucide-react";
+import { Clock, Mail, Menu, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { sectionIds } from "@/templates/handwerk-base/data";
 import { useHandwerk } from "@/templates/handwerk-base/i18n";
@@ -87,6 +87,15 @@ export function Header() {
                 {t.contact.phone}
               </a>
             )}
+            {t.contact.email && (
+              <a
+                href={`mailto:${t.contact.email}`}
+                className="hidden items-center gap-2 text-sm text-[var(--hw-cream)]/80 hover:text-white 2xl:inline-flex"
+              >
+                <Mail className="h-4 w-4" />
+                {t.contact.email}
+              </a>
+            )}
             <button
               type="button"
               onClick={open}
@@ -126,6 +135,24 @@ export function Header() {
                 </a>
               ))}
               <LanguageSwitcher id="mobile" className="mt-6 self-start" />
+              {t.contact.phoneHref && (
+                <a
+                  href={t.contact.phoneHref}
+                  className="mt-6 inline-flex items-center gap-2 text-sm text-[var(--hw-cream)]/80"
+                >
+                  <Phone className="h-4 w-4" />
+                  {t.contact.phone}
+                </a>
+              )}
+              {t.contact.email && (
+                <a
+                  href={`mailto:${t.contact.email}`}
+                  className="mt-3 inline-flex items-center gap-2 text-sm text-[var(--hw-cream)]/80"
+                >
+                  <Mail className="h-4 w-4" />
+                  {t.contact.email}
+                </a>
+              )}
               <button
                 type="button"
                 onClick={() => {
