@@ -1,15 +1,10 @@
-export type GalleryLink = {
-  label: string;
-  href: string;
-};
-
 export type GalleryCard = {
   id: string;
   title: string;
   titleFa: string;
   blurb: string;
   href: string;
-  variants?: GalleryLink[];
+  dashboardHref: string;
 };
 
 export const TEMPLATE_GALLERY: GalleryCard[] = [
@@ -19,10 +14,7 @@ export const TEMPLATE_GALLERY: GalleryCard[] = [
     titleFa: 'کلینیک بیس',
     blurb: 'قالب کامل مطب و کلینیک',
     href: '/preview?fixture=clinic-base',
-    variants: [
-      { label: 'Hermes کامل', href: '/preview?fixture=clinic-hermes-full' },
-      { label: 'Hermes ساده', href: '/preview?fixture=clinic-hermes-minimal' },
-    ],
+    dashboardHref: '/dashboard/clinic-base',
   },
   {
     id: 'handwerk-base',
@@ -30,10 +22,7 @@ export const TEMPLATE_GALLERY: GalleryCard[] = [
     titleFa: 'بازسازی بیس',
     blurb: 'قالب کامل بازسازی خانه',
     href: '/preview?fixture=handwerk-base',
-    variants: [
-      { label: 'Hermes کامل', href: '/preview?fixture=handwerk-hermes-full' },
-      { label: 'Hermes ساده', href: '/preview?fixture=handwerk-hermes-minimal' },
-    ],
+    dashboardHref: '/dashboard/handwerk-base',
   },
   {
     id: 'haustechnik-base',
@@ -41,5 +30,6 @@ export const TEMPLATE_GALLERY: GalleryCard[] = [
     titleFa: 'هاوس تکنیک بیس',
     blurb: 'قالب شرکت‌های خدماتی',
     href: '/preview?fixture=haustechnik-base',
+    dashboardHref: '/dashboard/haustechnik-base',
   },
 ];

@@ -3,6 +3,7 @@ import type { NextRequest } from 'next/server';
 
 const locales = ['de', 'en'] as const;
 const defaultLocale = 'de';
+const appPaths = new Set(['dashboard']);
 
 function isLocale(value: string): value is (typeof locales)[number] {
   return (locales as readonly string[]).includes(value);
@@ -55,7 +56,7 @@ export function proxy(request: NextRequest) {
   const afterLocale = locale === first ? segments.slice(1) : segments;
 
   if (!subdomain) {
-    if (afterLocale.length === 0) {
+    if (afterLocale.length === 0 || appPaths.has(afterLocale[0] || '')) {
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-locale', locale);
       const response = NextResponse.next({ request: { headers: requestHeaders } });

@@ -79,14 +79,20 @@ export function isTemplateId(value: string): value is TemplateId {
  * Pick a registered template from site JSON.
  * Order: explicit `templateId` → `businessCategory` → `businessType` → default.
  */
-export function resolveTemplateId(
+export function matchTemplateId(
   data: Pick<SiteConfig, 'templateId' | 'businessCategory' | 'businessType'>,
-): TemplateId {
+): TemplateId | null {
   for (const candidate of [data.templateId, data.businessCategory, data.businessType]) {
     const mapped = TEMPLATE_ALIASES[normalizeKey(candidate)];
     if (mapped) return mapped;
   }
-  return DEFAULT_TEMPLATE_ID;
+  return null;
+}
+
+export function resolveTemplateId(
+  data: Pick<SiteConfig, 'templateId' | 'businessCategory' | 'businessType'>,
+): TemplateId {
+  return matchTemplateId(data) ?? DEFAULT_TEMPLATE_ID;
 }
 
 const TEMPLATE_LOADERS: Record<TemplateId, () => Promise<{ default: ComponentType<TemplateProps> }>> = {
