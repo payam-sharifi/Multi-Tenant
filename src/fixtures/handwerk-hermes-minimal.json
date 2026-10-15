@@ -13,12 +13,24 @@
       {
         "type": "services",
         "items": [
-          { "name": "Badsanierung", "description": "Komplettes Bad, schlüsselfertig." },
-          { "name": "Malerarbeiten", "description": "Wände, Decken, Fassade." }
+          {
+            "name": "Badsanierung",
+            "description": "Komplettes Bad, schlüsselfertig."
+          },
+          {
+            "name": "Malerarbeiten",
+            "description": "Wände, Decken, Fassade."
+          }
         ]
       },
-      { "type": "working_hours", "text": "Mo–Fr 07:30–17:00" }
+      {
+        "type": "working_hours",
+        "text": "Mo–Fr 07:30–17:00"
+      }
     ]
   },
-  "theme_config": { "theme": "handwerk-base", "active": true }
+  "theme_config": {
+    "theme": "handwerk-base",
+    "active": true
+  }
 }

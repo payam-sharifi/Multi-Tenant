@@ -33,7 +33,8 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setMenuOpen(false);
+    const onKey = (event: KeyboardEvent) =>
+      event.key === "Escape" && setMenuOpen(false);
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
@@ -46,7 +47,9 @@ export function Header() {
       <header
         className={cn(
           "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300",
-          scrolled ? "border-white/10 bg-[var(--hw-forest-deep)]/95 backdrop-blur-md" : "border-transparent bg-[var(--hw-forest-deep)]",
+          scrolled
+            ? "border-white/10 bg-[var(--hw-forest-deep)]/95 backdrop-blur-md"
+            : "border-transparent bg-[var(--hw-forest-deep)]",
         )}
       >
         <div className="hw-container flex h-[78px] items-center justify-between gap-4">
@@ -67,18 +70,28 @@ export function Header() {
           <div className="hidden items-center gap-3 lg:flex">
             <LanguageSwitcher />
             {t.header.hours && (
-              <a href={`#${sectionIds.hours}`} className="hidden items-center gap-2 text-xs text-[var(--hw-cream)]/70 hover:text-white 2xl:inline-flex">
+              <a
+                href={`#${sectionIds.hours}`}
+                className="hidden items-center gap-2 text-xs text-[var(--hw-cream)]/70 hover:text-white 2xl:inline-flex"
+              >
                 <Clock className="h-3.5 w-3.5" />
                 {t.header.hours}
               </a>
             )}
             {t.contact.phoneHref && (
-              <a href={t.contact.phoneHref} className="hidden items-center gap-2 text-sm text-[var(--hw-cream)]/80 hover:text-white 2xl:inline-flex">
+              <a
+                href={t.contact.phoneHref}
+                className="hidden items-center gap-2 text-sm text-[var(--hw-cream)]/80 hover:text-white 2xl:inline-flex"
+              >
                 <Phone className="h-4 w-4" />
                 {t.contact.phone}
               </a>
             )}
-            <button type="button" onClick={open} className="hw-btn hw-btn-clay h-11 px-5 text-sm">
+            <button
+              type="button"
+              onClick={open}
+              className="hw-btn hw-btn-clay h-11 px-5 text-sm"
+            >
               {t.header.cta}
             </button>
           </div>
@@ -113,7 +126,14 @@ export function Header() {
                 </a>
               ))}
               <LanguageSwitcher id="mobile" className="mt-6 self-start" />
-              <button type="button" onClick={() => { setMenuOpen(false); open(); }} className="hw-btn hw-btn-clay mt-6 h-12">
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  open();
+                }}
+                className="hw-btn hw-btn-clay mt-6 h-12"
+              >
                 {t.header.cta}
               </button>
             </nav>

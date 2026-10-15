@@ -287,8 +287,10 @@ const de = {
     phonePlaceholder: "Telefonnummer",
     message: "Erzählen Sie uns von Ihrem Projekt",
     submit: "Kostenlose Beratung anfragen",
+    sending: "Wird gesendet…",
     success: "Danke. Wir melden uns innerhalb von 24 Stunden.",
-    formNote: "Mit dem Absenden stimmen Sie der Kontaktaufnahme zu.",
+    error: "Die Nachricht konnte nicht gesendet werden. Bitte rufen Sie uns an oder versuchen Sie es erneut.",
+    formNote: "Mit dem Absenden geht Ihre Anfrage direkt an uns — per Telegram oder WhatsApp.",
     locations: [
       { name: "VELORA Hamburg", address: "Große Bleichen 31, 20354 Hamburg" },
       { name: "VELORA Köln", address: "Hohenzollernring 22, 50672 Köln" },
@@ -509,8 +511,10 @@ const en: typeof de = {
     phonePlaceholder: "Phone number",
     message: "Tell us about your project",
     submit: "Request a free consultation",
+    sending: "Sending…",
     success: "Thank you. We will reply within 24 hours.",
-    formNote: "By submitting you agree to be contacted.",
+    error: "The message could not be sent. Please call us or try again.",
+    formNote: "By submitting, your enquiry is sent directly to us via Telegram or WhatsApp.",
     locations: [
       { name: "VELORA Hamburg", address: "Große Bleichen 31, 20354 Hamburg" },
       { name: "VELORA Cologne", address: "Hohenzollernring 22, 50672 Köln" },

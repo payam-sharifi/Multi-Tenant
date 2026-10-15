@@ -16,8 +16,14 @@
       {
         "type": "services",
         "items": [
-          { "name": "Badsanierung", "description": "Komplettes Bad, schlüsselfertig." },
-          { "name": "Wohnungsrenovierung", "description": "Küche, Wohnzimmer, Flur." }
+          {
+            "name": "Badsanierung",
+            "description": "Komplettes Bad, schlüsselfertig."
+          },
+          {
+            "name": "Wohnungsrenovierung",
+            "description": "Küche, Wohnzimmer, Flur."
+          }
         ]
       },
       {
@@ -27,14 +33,26 @@
         "count": "12 Google-Bewertungen",
         "location": "Hamburg",
         "items": [
-          { "name": "Lea Hoffmann", "city": "Eimsbüttel", "date": "vor 1 Monat", "text": "Pünktlich und sauber. Das Bad ist genau wie besprochen.", "rating": 5 }
+          {
+            "name": "Lea Hoffmann",
+            "city": "Eimsbüttel",
+            "date": "vor 1 Monat",
+            "text": "Pünktlich und sauber. Das Bad ist genau wie besprochen.",
+            "rating": 5
+          }
         ]
       },
       {
         "type": "working_hours",
         "items": [
-          { "days": "Mo–Fr", "hours": "08:00–17:00" },
-          { "days": "Sa", "hours": "geschlossen" }
+          {
+            "days": "Mo–Fr",
+            "hours": "08:00–17:00"
+          },
+          {
+            "days": "Sa",
+            "hours": "geschlossen"
+          }
         ]
       },
       {
@@ -48,10 +66,16 @@
         "type": "materials",
         "title": "Materialien",
         "items": [
-          { "title": "Eiche Laminat", "spec": "8 mm" }
+          {
+            "title": "Eiche Laminat",
+            "spec": "8 mm"
+          }
         ]
       }
     ]
   },
-  "theme_config": { "theme": "handwerk-base", "active": true }
+  "theme_config": {
+    "theme": "handwerk-base",
+    "active": true
+  }
 }

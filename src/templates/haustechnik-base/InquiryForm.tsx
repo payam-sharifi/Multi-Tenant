@@ -1,17 +1,19 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent } from 'react';
 import { CheckCircle2, Mail, MapPin, Phone } from 'lucide-react';
+import { formDataToFields, LeadHoneypot, useLeadSubmit } from '@/components/shared/LeadProvider';
 import { useHaustechnik } from '@/templates/haustechnik-base/context';
 
 export function InquiryForm() {
   const { phoneDisplay, phoneHref, email, addressLines, emergencyHours, serviceOptions, datenschutzHref, content } =
     useHaustechnik();
-  const [sent, setSent] = useState(false);
+  const { status, error, submit, sending } = useLeadSubmit('inquiry');
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSent(true);
+    const { fields, honeypot } = formDataToFields(event.currentTarget);
+    await submit(fields, honeypot);
   }
 
   return (
@@ -63,7 +65,7 @@ export function InquiryForm() {
         </div>
 
         <div className="rounded-3xl border border-[var(--mh-line)] bg-white p-6 shadow-[0_20px_50px_-28px_rgba(11,37,69,0.45)] sm:p-8">
-          {sent ? (
+          {status === 'sent' ? (
             <div className="flex min-h-[320px] flex-col items-start justify-center" role="status">
               <CheckCircle2 className="h-10 w-10 text-emerald-600" aria-hidden />
               <h3 className="mt-4 text-2xl font-bold text-[var(--mh-navy)]">Anfrage erhalten</h3>
@@ -74,6 +76,7 @@ export function InquiryForm() {
             </div>
           ) : (
             <form onSubmit={onSubmit}>
+              <LeadHoneypot />
               <div className="grid gap-4">
                 <Field id="name" label="Name" autoComplete="name" required />
                 <Field id="email" label="E-Mail" type="email" autoComplete="email" required />
@@ -124,11 +127,16 @@ export function InquiryForm() {
                     gelesen und willige in die Verarbeitung meiner Angaben zur Bearbeitung der Anfrage ein.
                   </span>
                 </label>
-                <button type="submit" className="mh-btn mh-btn-accent mt-2 h-12 w-full text-base">
-                  Anfrage absenden
+                <button type="submit" disabled={sending} className="mh-btn mh-btn-accent mt-2 h-12 w-full text-base disabled:opacity-60">
+                  {sending ? 'Wird gesendet…' : 'Anfrage absenden'}
                 </button>
+                {status === 'error' && (
+                  <p className="text-sm text-red-700" role="alert">
+                    {error || 'Die Nachricht konnte nicht gesendet werden. Bitte rufen Sie uns an oder versuchen Sie es erneut.'}
+                  </p>
+                )}
                 <p className="text-xs text-[var(--mh-muted)]">
-                  Pflichtfelder. Dies ist eine Demo-Seite – es wird keine Nachricht versendet.
+                  Pflichtfelder. Ihre Anfrage wird direkt per Telegram oder WhatsApp an uns gesendet.
                 </p>
               </div>
             </form>
