@@ -1,19 +1,43 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CalendarDays, CheckCircle2, ChevronDown, Clock, Loader2, Phone, ShieldCheck, Stethoscope, User, X } from "lucide-react";
+import {
+  CalendarDays,
+  CheckCircle2,
+  ChevronDown,
+  Clock,
+  Loader2,
+  Phone,
+  ShieldCheck,
+  Stethoscope,
+  User,
+  X,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLeadSubmit } from "@/components/shared/LeadProvider";
 import { useBooking } from "@/templates/clinic-base/booking";
 import { timeSlots } from "@/templates/clinic-base/data";
 import { useI18n } from "@/templates/clinic-base/i18n";
 import { cn } from "@/templates/clinic-base/utils";
 import { Button } from "./ui/Button";
 
-type Form = { name: string; phone: string; spec: string; doctor: string; date: string; time: string };
+type Form = {
+  name: string;
+  phone: string;
+  spec: string;
+  doctor: string;
+  date: string;
+  time: string;
+};
 type Errors = Partial<Record<keyof Form, string>>;
 
-const empty: Form = { name: "", phone: "", spec: "", doctor: "", date: "", time: "" };
+const empty: Form = {
+  name: "",
+  phone: "",
+  spec: "",
+  doctor: "",
+  date: "",
+  time: "",
+};
 
 const todayStr = () => {
   const d = new Date();
@@ -36,20 +60,25 @@ export function BookingModal() {
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const firstRef = useRef<HTMLInputElement>(null);
-  const { submit, error: sendError, reset: resetLead } = useLeadSubmit("booking");
 
   // reset + prefill each time the modal opens
   useEffect(() => {
     if (!isOpen) return;
     const doc = doctors.find((d) => d.id === prefill.doctor);
     const requested = doc?.serviceIndex ?? prefill.service;
-    const service = requested !== undefined && t.services.items[requested] ? requested : undefined;
+    const service =
+      requested !== undefined && t.services.items[requested]
+        ? requested
+        : undefined;
     // Intentional: reset the form each time the dialog opens.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setForm({ ...empty, spec: service !== undefined ? String(service) : "", doctor: doc?.id ?? "" });
+    setForm({
+      ...empty,
+      spec: service !== undefined ? String(service) : "",
+      doctor: doc?.id ?? "",
+    });
     setErrors({});
     setStatus("idle");
-    resetLead();
     const id = setTimeout(() => firstRef.current?.focus(), 350);
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -72,7 +101,11 @@ export function BookingModal() {
     () =>
       form.spec === ""
         ? doctors
-        : doctors.filter((d) => d.serviceIndex === undefined || d.serviceIndex === Number(form.spec)),
+        : doctors.filter(
+            (d) =>
+              d.serviceIndex === undefined ||
+              d.serviceIndex === Number(form.spec),
+          ),
     [form.spec, doctors],
   );
 
@@ -84,7 +117,9 @@ export function BookingModal() {
   const onSpecChange = (v: string) => {
     setForm((f) => {
       const stillValid = doctors.some(
-        (d) => d.id === f.doctor && (d.serviceIndex === undefined || String(d.serviceIndex) === v),
+        (d) =>
+          d.id === f.doctor &&
+          (d.serviceIndex === undefined || String(d.serviceIndex) === v),
       );
       return { ...f, spec: v, doctor: stillValid ? f.doctor : "" };
     });
@@ -101,23 +136,14 @@ export function BookingModal() {
     return e;
   };
 
-  const onSubmit = async (ev: React.FormEvent) => {
+  const onSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
     const e = validate();
     setErrors(e);
     if (Object.keys(e).length) return;
     setStatus("sending");
-    const specTitle = form.spec !== "" ? t.services.items[Number(form.spec)]?.title : "";
-    const doctorName = doctors.find((d) => d.id === form.doctor)?.name ?? "";
-    const ok = await submit({
-      name: form.name.trim(),
-      phone: form.phone.trim(),
-      spec: specTitle || form.spec,
-      doctor: doctorName,
-      date: form.date,
-      time: form.time,
-    });
-    setStatus(ok ? "done" : "idle");
+    // Demo only: replace with a real API call (e.g. POST /api/appointments)
+    setTimeout(() => setStatus("done"), 1000);
   };
 
   const doc = doctors.find((d) => d.id === form.doctor);
@@ -150,7 +176,10 @@ export function BookingModal() {
           >
             {/* header */}
             <div className="relative overflow-hidden bg-gradient-to-br from-brand-800 to-brand-950 px-6 py-6 text-white sm:px-8">
-              <div aria-hidden className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-mint/25 blur-3xl" />
+              <div
+                aria-hidden
+                className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-mint/25 blur-3xl"
+              />
               <button
                 type="button"
                 onClick={close}
@@ -159,10 +188,15 @@ export function BookingModal() {
               >
                 <X className="h-5 w-5" />
               </button>
-              <h2 id="booking-title" className="relative pr-12 text-2xl font-extrabold tracking-tight">
+              <h2
+                id="booking-title"
+                className="relative pr-12 text-2xl font-extrabold tracking-tight"
+              >
                 {b.title}
               </h2>
-              <p className="relative mt-1 text-sm text-white/70">{b.subtitle}</p>
+              <p className="relative mt-1 text-sm text-white/70">
+                {b.subtitle}
+              </p>
             </div>
 
             <div className="overflow-y-auto">
@@ -184,7 +218,13 @@ export function BookingModal() {
                         onChange={(e) => set("name", e.target.value)}
                         placeholder={b.namePh}
                         aria-invalid={!!errors.name}
-                        className={cn(inputBase, "pl-11", errors.name ? "border-red-400" : "border-brand-900/10")}
+                        className={cn(
+                          inputBase,
+                          "pl-11",
+                          errors.name
+                            ? "border-red-400"
+                            : "border-brand-900/10",
+                        )}
                       />
                     </Field>
 
@@ -194,58 +234,99 @@ export function BookingModal() {
                         inputMode="tel"
                         autoComplete="tel"
                         value={form.phone}
-                        onChange={(e) => set("phone", e.target.value.replace(/[^\d+\s()-]/g, ""))}
+                        onChange={(e) =>
+                          set(
+                            "phone",
+                            e.target.value.replace(/[^\d+\s()-]/g, ""),
+                          )
+                        }
                         placeholder={b.phonePh}
                         aria-invalid={!!errors.phone}
-                        className={cn(inputBase, "pl-11", errors.phone ? "border-red-400" : "border-brand-900/10")}
+                        className={cn(
+                          inputBase,
+                          "pl-11",
+                          errors.phone
+                            ? "border-red-400"
+                            : "border-brand-900/10",
+                        )}
                       />
                     </Field>
 
-                    <div className={cn("grid gap-5", hasServices && hasDoctors && "sm:grid-cols-2")}>
+                    <div
+                      className={cn(
+                        "grid gap-5",
+                        hasServices && hasDoctors && "sm:grid-cols-2",
+                      )}
+                    >
                       {hasServices && (
-                      <Field label={b.spec} icon={Stethoscope} error={errors.spec} chevron>
-                        <select
-                          value={form.spec}
-                          onChange={(e) => onSpecChange(e.target.value)}
-                          aria-invalid={!!errors.spec}
-                          className={cn(inputBase, "appearance-none pl-11 pr-10", errors.spec ? "border-red-400" : "border-brand-900/10", form.spec === "" && "text-muted")}
+                        <Field
+                          label={b.spec}
+                          icon={Stethoscope}
+                          error={errors.spec}
+                          chevron
                         >
-                          <option value="">{b.specPh}</option>
-                          {t.services.items.map((s, i) => (
-                            <option key={s.id} value={i}>
-                              {s.title}
-                            </option>
-                          ))}
-                        </select>
-                      </Field>
+                          <select
+                            value={form.spec}
+                            onChange={(e) => onSpecChange(e.target.value)}
+                            aria-invalid={!!errors.spec}
+                            className={cn(
+                              inputBase,
+                              "appearance-none pl-11 pr-10",
+                              errors.spec
+                                ? "border-red-400"
+                                : "border-brand-900/10",
+                              form.spec === "" && "text-muted",
+                            )}
+                          >
+                            <option value="">{b.specPh}</option>
+                            {t.services.items.map((s, i) => (
+                              <option key={s.id} value={i}>
+                                {s.title}
+                              </option>
+                            ))}
+                          </select>
+                        </Field>
                       )}
 
                       {hasDoctors && (
-                      <Field label={b.doctor} icon={User} chevron>
-                        <select
-                          value={form.doctor}
-                          onChange={(e) => set("doctor", e.target.value)}
-                          className={cn(inputBase, "appearance-none pl-11 pr-10 border-brand-900/10")}
-                        >
-                          <option value="">{b.doctorAny}</option>
-                          {availableDoctors.map((d) => (
-                            <option key={d.id} value={d.id}>
-                              {d.name}
-                            </option>
-                          ))}
-                        </select>
-                      </Field>
+                        <Field label={b.doctor} icon={User} chevron>
+                          <select
+                            value={form.doctor}
+                            onChange={(e) => set("doctor", e.target.value)}
+                            className={cn(
+                              inputBase,
+                              "appearance-none pl-11 pr-10 border-brand-900/10",
+                            )}
+                          >
+                            <option value="">{b.doctorAny}</option>
+                            {availableDoctors.map((d) => (
+                              <option key={d.id} value={d.id}>
+                                {d.name}
+                              </option>
+                            ))}
+                          </select>
+                        </Field>
                       )}
                     </div>
 
-                    <Field label={b.date} icon={CalendarDays} error={errors.date}>
+                    <Field
+                      label={b.date}
+                      icon={CalendarDays}
+                      error={errors.date}
+                    >
                       <input
                         type="date"
                         min={todayStr()}
                         value={form.date}
                         onChange={(e) => set("date", e.target.value)}
                         aria-invalid={!!errors.date}
-                        className={cn(inputBase, "pl-11", errors.date ? "border-red-400" : "border-brand-900/10")}
+                        className={cn(
+                          inputBase,
+                          "pl-11",
+                          errors.date
+                            ? "border-red-400"
+                            : "border-brand-900/10",
+                        )}
                       />
                     </Field>
 
@@ -276,10 +357,19 @@ export function BookingModal() {
                           );
                         })}
                       </div>
-                      {errors.time && <p className="mt-2 text-xs font-medium text-red-500">{errors.time}</p>}
+                      {errors.time && (
+                        <p className="mt-2 text-xs font-medium text-red-500">
+                          {errors.time}
+                        </p>
+                      )}
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full" disabled={status === "sending"}>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full"
+                      disabled={status === "sending"}
+                    >
                       {status === "sending" ? (
                         <>
                           <Loader2 className="h-5 w-5 animate-spin" />
@@ -289,7 +379,6 @@ export function BookingModal() {
                         b.submit
                       )}
                     </Button>
-                    {sendError && <p className="text-center text-sm font-medium text-red-500">{sendError || b.errSend}</p>}
                     <p className="flex items-start justify-center gap-2 text-center text-xs text-muted">
                       <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-mint-dark" />
                       {b.privacy}
@@ -305,20 +394,37 @@ export function BookingModal() {
                     <motion.div
                       initial={{ scale: 0, rotate: -90 }}
                       animate={{ scale: 1, rotate: 0 }}
-                      transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.1 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 16,
+                        delay: 0.1,
+                      }}
                       className="mx-auto grid h-20 w-20 place-items-center rounded-full bg-mint-soft text-mint-dark"
                     >
                       <CheckCircle2 className="h-11 w-11" />
                     </motion.div>
-                    <h3 className="mt-6 text-2xl font-extrabold text-brand-900">{b.successTitle}</h3>
+                    <h3 className="mt-6 text-2xl font-extrabold text-brand-900">
+                      {b.successTitle}
+                    </h3>
                     <p className="mx-auto mt-2 max-w-sm text-sm text-muted">
-                      {b.successText.replace("{name}", form.name.trim().split(" ")[0])}
+                      {b.successText.replace(
+                        "{name}",
+                        form.name.trim().split(" ")[0],
+                      )}
                     </p>
 
                     <div className="mx-auto mt-6 max-w-sm rounded-2xl bg-surface p-4 text-left text-sm">
-                      <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted">{b.summary}</p>
+                      <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted">
+                        {b.summary}
+                      </p>
                       <dl className="space-y-1.5">
-                        {hasServices && <Row k={b.spec} v={t.services.items[Number(form.spec)]?.title} />}
+                        {hasServices && (
+                          <Row
+                            k={b.spec}
+                            v={t.services.items[Number(form.spec)]?.title}
+                          />
+                        )}
                         {doc && <Row k={b.doctor} v={doc.name} />}
                         <Row k={b.date} v={`${form.date} · ${form.time}`} />
                         <Row k={b.phone} v={form.phone} />
@@ -329,7 +435,13 @@ export function BookingModal() {
                       <Button variant="dark" onClick={close}>
                         {b.close}
                       </Button>
-                      <Button variant="outline" onClick={() => { setForm(empty); setStatus("idle"); }}>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setForm(empty);
+                          setStatus("idle");
+                        }}
+                      >
                         {b.another}
                       </Button>
                     </div>
@@ -368,7 +480,9 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-brand-700">{label}</span>
+      <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-brand-700">
+        {label}
+      </span>
       <span className="relative block">
         <Icon className="pointer-events-none absolute left-4 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted" />
         {children}

@@ -117,8 +117,6 @@ export type SiteConfig = {
   servicesBlock?: SiteServicesBlock;
   /** Optional design variant of the business type, from theme_config.template. */
   templateId?: string;
-  /** Tenant slug (`ahura`). Used by contact forms to notify the owner. */
-  subdomain?: string;
   /** Public path prefix on localhost (`/demo`). Empty on real subdomain hosts. */
   basePath?: string;
   /** Dev-only query (`?fixture=...`) preserved on legal links. */

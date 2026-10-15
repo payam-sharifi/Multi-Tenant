@@ -87,10 +87,8 @@
     "formGuests": "Gäste",
     "formMessage": "Nachricht",
     "formSubmit": "Absenden",
-    "formSending": "Wird gesendet…",
     "formSuccess": "Vielen Dank. Wir melden uns in Kürze.",
-    "formError": "Die Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
-    "formNote": "Mit dem Absenden wird Ihre Anfrage direkt an uns weitergeleitet.",
+    "formNote": "Unverbindliche Anfrage — ohne Backend-Anbindung.",
     "priceOnRequest": "auf Anfrage"
   },
   "defaults": {
