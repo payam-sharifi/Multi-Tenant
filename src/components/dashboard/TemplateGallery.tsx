@@ -12,7 +12,7 @@ export async function TemplateGallery() {
       <div className="mx-auto max-w-4xl">
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm font-semibold text-zinc-500">صفحهٔ ادمین قالب‌ها</p>
-          <AdminNav current="templates" />
+          <AdminNav />
         </div>
         <h1 className="mt-2 text-4xl font-black tracking-tight">همهٔ قالب‌ها</h1>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-600">

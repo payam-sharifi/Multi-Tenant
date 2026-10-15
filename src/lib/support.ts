@@ -1,6 +1,6 @@
 import { sendTelegram, sendWhatsApp } from '@/lib/notify';
 import { getSupabase } from '@/lib/supabase';
-import { isActiveWebsite, listWebsites, type WebsiteRow } from '@/lib/tenant';
+import { getWebsiteById, isActiveWebsite, listWebsites, type WebsiteRow } from '@/lib/tenant';
 
 export const SUPPORT_CHANNELS = ['telegram', 'whatsapp'] as const;
 export type SupportChannel = (typeof SUPPORT_CHANNELS)[number];
@@ -25,6 +25,11 @@ export type SupportMessage = {
   channels: SupportChannel[];
   platform: string | null;
   createdAt: string;
+};
+
+export type SiteUnread = {
+  count: number;
+  lastUserAt: string | null;
 };
 
 type UserRow = {
@@ -213,6 +218,71 @@ export async function listSupportUsers(): Promise<{ users: SupportUser[]; missin
   return { users: result, missingTable: missingTable || undefined };
 }
 
+function messagesForSite(rows: MessageRow[], site: WebsiteRow): MessageRow[] {
+  const siteId = asString(site.id);
+  const ownerId = asString(site.user_id);
+  return rows.filter((row) => {
+    const websiteId = asString(row.website_id);
+    if (websiteId) return websiteId === siteId;
+    return ownerId && asString(row.user_id) === ownerId;
+  });
+}
+
+export async function listUnreadBySite(): Promise<{ unread: Record<string, SiteUnread>; missingTable?: boolean }> {
+  const [rows, websites, users] = await Promise.all([listMessageRows(), listWebsites(), listUserRows()]);
+  if (!Array.isArray(rows)) return { unread: {}, missingTable: true };
+
+  const bySite = new Map<string, MessageRow[]>();
+  for (const row of rows) {
+    let siteId = asString(row.website_id);
+    if (!siteId) {
+      const user = users.find((item) => item.id === row.user_id);
+      siteId = asString(user ? pickWebsite(user, websites)?.id : '');
+    }
+    if (!siteId) continue;
+    const list = bySite.get(siteId) || [];
+    list.push(row);
+    bySite.set(siteId, list);
+  }
+
+  const unread: Record<string, SiteUnread> = {};
+  for (const [siteId, list] of bySite) {
+    const lastUser = [...list].reverse().find((row) => row.sender === 'user');
+    const last = list.at(-1);
+    const count = last?.sender === 'user' ? 1 : 0;
+    if (count && lastUser) {
+      unread[siteId] = { count, lastUserAt: asString(lastUser.created_at) };
+    }
+  }
+  return { unread };
+}
+
+export async function listSupportMessagesBySite(
+  siteId: string,
+): Promise<{ user?: SupportUser; siteId?: string; messages: SupportMessage[]; missingTable?: boolean; error?: string }> {
+  const site = await getWebsiteById(siteId);
+  if (!site?.id) return { messages: [], error: 'سایت پیدا نشد' };
+  const ownerId = asString(site.user_id);
+  if (!ownerId) return { messages: [], error: 'مالک این سایت پیدا نشد' };
+
+  const [user, websites, rows] = await Promise.all([
+    getUserRow(ownerId),
+    listWebsites(),
+    listMessageRows(),
+  ]);
+  if (!user) return { messages: [], error: 'کاربر پیدا نشد' };
+  if (!Array.isArray(rows)) {
+    return { user: toSupportUser(user, [site], undefined), siteId: site.id, messages: [], missingTable: true };
+  }
+
+  const scoped = messagesForSite(rows, site);
+  return {
+    user: toSupportUser(user, [site, ...websites], scoped.at(-1)),
+    siteId: site.id,
+    messages: scoped.map(mapMessage),
+  };
+}
+
 export async function listSupportMessages(
   userId: string,
 ): Promise<{ user?: SupportUser; messages: SupportMessage[]; missingTable?: boolean; error?: string }> {
@@ -234,6 +304,7 @@ export async function sendSupportMessage(
   userId: string,
   body: string,
   channels: SupportChannel[],
+  websiteId?: string,
 ): Promise<{ message?: SupportMessage; channels: SupportChannel[]; error?: string; missingTable?: boolean }> {
   const text = body.trim();
   if (!text) return { channels: [], error: 'متن پیام خالی است' };
@@ -247,7 +318,12 @@ export async function sendSupportMessage(
   if (!user) return { channels: [], error: 'کاربر پیدا نشد' };
 
   const websites = await listWebsites();
-  const website = pickWebsite(user, websites);
+  const website = websiteId
+    ? websites.find((row) => asString(row.id) === websiteId) || (await getWebsiteById(websiteId))
+    : pickWebsite(user, websites);
+  if (websiteId && (!website || asString(website.user_id) !== user.id)) {
+    return { channels: [], error: 'این سایت برای این کاربر نیست' };
+  }
   const envelope = formatAdminEnvelope(text, asString(user.language) || 'fa');
   const delivered: SupportChannel[] = [];
 
@@ -288,6 +364,17 @@ export async function sendSupportMessage(
   }
 
   return { message: data ? mapMessage(data as MessageRow) : undefined, channels: delivered };
+}
+
+export async function sendSupportMessageToSite(
+  siteId: string,
+  body: string,
+  channels: SupportChannel[],
+): Promise<{ message?: SupportMessage; channels: SupportChannel[]; error?: string; missingTable?: boolean }> {
+  const site = await getWebsiteById(siteId);
+  const ownerId = asString(site?.user_id);
+  if (!site || !ownerId) return { channels: [], error: 'سایت پیدا نشد' };
+  return sendSupportMessage(ownerId, body, channels, asString(site.id));
 }
 
 export async function recordUserSupportMessage(input: {

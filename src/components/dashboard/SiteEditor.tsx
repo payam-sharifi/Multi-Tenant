@@ -1,8 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { TemplateJsonEditor } from '@/components/dashboard/TemplateJsonEditor';
+import { hasUnseenSupport } from '@/lib/support-seen';
+import type { SiteUnread } from '@/lib/support';
 import type { TemplateTenant } from '@/lib/template-dashboard';
 
 type Props = {
@@ -45,6 +48,33 @@ export function SiteEditor({ templateId, fixture, tenants }: Props) {
   const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [unread, setUnread] = useState<Record<string, SiteUnread>>({});
+  const [seenReady, setSeenReady] = useState(false);
+
+  useEffect(() => {
+    setSeenReady(true);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadUnread() {
+      try {
+        const response = await fetch('/api/admin/support/unread');
+        const payload = (await response.json()) as { unread?: Record<string, SiteUnread> };
+        if (!cancelled) setUnread(payload.unread || {});
+      } catch {
+        if (!cancelled) setUnread({});
+      }
+    }
+    void loadUnread();
+    const timer = window.setInterval(() => {
+      void loadUnread();
+    }, 12000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -224,6 +254,15 @@ export function SiteEditor({ templateId, fixture, tenants }: Props) {
                     >
                       جیسون قالب
                     </button>
+                    <Link
+                      href={`/admin/messages/${tenant.id}?from=${templateId}`}
+                      className="relative rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-700 hover:border-zinc-400"
+                    >
+                      پیام‌ها
+                      {seenReady && hasUnseenSupport(tenant.id, unread[tenant.id]?.lastUserAt) ? (
+                        <span className="absolute -top-1 -left-1 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white" />
+                      ) : null}
+                    </Link>
                   </div>
                 </td>
               </tr>
@@ -310,14 +349,6 @@ export function SiteEditor({ templateId, fixture, tenants }: Props) {
               >
                 باز کردن
               </a>
-              {draft.userId ? (
-                <a
-                  href={`/admin/messages?user=${draft.userId}`}
-                  className="rounded-full border border-zinc-200 px-4 py-2 text-sm font-bold text-zinc-700 hover:border-zinc-400"
-                >
-                  پیام پشتیبانی
-                </a>
-              ) : null}
               <button
                 type="button"
                 onClick={remove}
