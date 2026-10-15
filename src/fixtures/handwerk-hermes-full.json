@@ -1,0 +1,57 @@
+{
+  "site_data": {
+    "business_name": "Nordholz Sanierung",
+    "phone": "+49 40 4410 2200",
+    "email": "hallo@nordholz-sanierung.de",
+    "address": "Neuer Wall 12, 20354 Hamburg",
+    "google_maps": "https://www.google.com/maps/search/?api=1&query=Neuer%20Wall%2012%2C%2020354%20Hamburg",
+    "sections": [
+      {
+        "type": "hero",
+        "title": "Sanierung in Hamburg — alle Gewerke, ein Ansprechpartner.",
+        "subtitle": "Von der Planung bis zur Übergabe. Festpreis, Visualisierung, Förderberatung.",
+        "cta_button": "Beratung anfragen",
+        "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=80"
+      },
+      {
+        "type": "services",
+        "items": [
+          { "name": "Badsanierung", "description": "Komplettes Bad, schlüsselfertig." },
+          { "name": "Wohnungsrenovierung", "description": "Küche, Wohnzimmer, Flur." }
+        ]
+      },
+      {
+        "type": "reviews",
+        "title": "Google-Bewertungen aus Hamburg",
+        "rating": "4,8",
+        "count": "12 Google-Bewertungen",
+        "location": "Hamburg",
+        "items": [
+          { "name": "Lea Hoffmann", "city": "Eimsbüttel", "date": "vor 1 Monat", "text": "Pünktlich und sauber. Das Bad ist genau wie besprochen.", "rating": 5 }
+        ]
+      },
+      {
+        "type": "working_hours",
+        "items": [
+          { "days": "Mo–Fr", "hours": "08:00–17:00" },
+          { "days": "Sa", "hours": "geschlossen" }
+        ]
+      },
+      {
+        "type": "contact",
+        "title": "Kontakt Hamburg",
+        "hqAddress": "Neuer Wall 12, 20354 Hamburg",
+        "mapQuery": "Neuer Wall 12, 20354 Hamburg",
+        "coverage": "Hamburg und Umgebung"
+      },
+      {
+        "type": "materials",
+        "title": "Materialien",
+        "items": [
+          { "title": "Eiche Laminat", "spec": "8 mm" }
+        ]
+      }
+    ]
+  },
+  "theme_config": { "theme": "handwerk-base", "active": true }
+}
