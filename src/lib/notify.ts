@@ -1,28 +1,61 @@
 import { createHmac } from 'crypto';
 
+export type NotifyResult = { ok: boolean; error?: string };
+
+function normalizeChatId(chatId: string): string {
+  const trimmed = chatId.trim();
+  if (/^-?\d+$/.test(trimmed)) return trimmed;
+  const digits = trimmed.replace(/[^\d-]/g, '');
+  return digits || trimmed;
+}
+
 export async function sendTelegram(chatId: string, text: string): Promise<boolean> {
+  return (await sendTelegramDetailed(chatId, text)).ok;
+}
+
+export async function sendTelegramDetailed(chatId: string, text: string): Promise<NotifyResult> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) {
     console.error('[notify] TELEGRAM_BOT_TOKEN missing');
-    return false;
+    return { ok: false, error: 'telegram_token_missing' };
   }
 
-  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text,
-      disable_web_page_preview: true,
-    }),
-  });
+  const to = normalizeChatId(chatId);
+  try {
+    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: to,
+        text,
+        disable_web_page_preview: true,
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
 
-  if (!response.ok) {
-    const detail = await response.text().catch(() => '');
-    console.error('[notify] telegram send failed', response.status, detail.slice(0, 240));
-    return false;
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      console.error('[notify] telegram send failed', response.status, detail.slice(0, 240));
+      if (response.status === 401) return { ok: false, error: 'telegram_token_invalid' };
+      if (response.status === 403) return { ok: false, error: 'telegram_blocked' };
+      if (detail.includes('chat not found')) return { ok: false, error: 'telegram_chat_not_found' };
+      return { ok: false, error: 'telegram_failed' };
+    }
+    return { ok: true };
+  } catch (error) {
+    console.error('[notify] telegram send error', error);
+    return { ok: false, error: 'telegram_failed' };
   }
-  return true;
+}
+
+export async function deliverTelegram(chatId: string, text: string): Promise<NotifyResult> {
+  const direct = await sendTelegramDetailed(chatId, text);
+  if (direct.ok) return direct;
+  const viaHermes =
+    (await sendHermesWebhook('website-lead-telegram', chatId, text)) ||
+    (await sendHermesWebhook('support-telegram', chatId, text));
+  if (viaHermes) return { ok: true };
+  return direct;
 }
 
 export async function sendWhatsApp(phone: string, text: string): Promise<boolean> {
@@ -60,7 +93,7 @@ export async function sendHermesWebhook(
   chatId: string,
   text: string,
 ): Promise<boolean> {
-  const base = (process.env.HERMES_WEBHOOK_URL || '').replace(/\/$/, '');
+  const base = (process.env.HERMES_WEBHOOK_URL || 'http://127.0.0.1:8642').replace(/\/$/, '');
   const secret = process.env.HERMES_WEBHOOK_SECRET || process.env.WEBHOOK_SECRET || '';
   if (!base || !chatId) return false;
 
@@ -75,6 +108,7 @@ export async function sendHermesWebhook(
       method: 'POST',
       headers,
       body,
+      signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) {
       const detail = await response.text().catch(() => '');

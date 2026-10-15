@@ -39,7 +39,7 @@ export async function POST(
   const payload = body && typeof body === 'object' ? (body as Record<string, unknown>) : {};
   const text = typeof payload.body === 'string' ? payload.body : '';
   const result = await sendSupportMessage(userId, text, asChannels(payload.channels));
-  if (result.error) {
+  if (result.error && !result.message) {
     return NextResponse.json(result, { status: result.missingTable ? 503 : 400 });
   }
   return NextResponse.json(result);

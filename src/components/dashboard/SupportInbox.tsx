@@ -21,6 +21,14 @@ function formatTime(value: string | null): string {
   }).format(date);
 }
 
+function defaultChannels(user?: SupportUser | null): SupportChannel[] {
+  if (!user) return ['telegram'];
+  const next: SupportChannel[] = [];
+  if (user.telegramId || user.lastUserPlatform === 'telegram') next.push('telegram');
+  if (user.whatsappPhone || user.lastUserPlatform === 'whatsapp') next.push('whatsapp');
+  return next.length ? next : ['telegram'];
+}
+
 export function SupportInbox({ siteId }: { siteId: string }) {
   const [thread, setThread] = useState<SupportUser | null>(null);
   const [messages, setMessages] = useState<SupportMessage[]>([]);
@@ -29,32 +37,36 @@ export function SupportInbox({ siteId }: { siteId: string }) {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  const [warning, setWarning] = useState('');
   const [missingTable, setMissingTable] = useState(false);
 
-  const loadThread = useCallback(async () => {
-    if (!siteId) return;
-    const response = await fetch(`/api/admin/support/site/${siteId}`);
-    const payload = (await response.json()) as ThreadPayload;
-    if (!response.ok) {
-      setError(payload.error || 'گفتگو باز نشد');
+  const canTelegram = Boolean(thread?.telegramId || thread?.lastUserPlatform === 'telegram');
+  const canWhatsapp = Boolean(thread?.whatsappPhone || thread?.lastUserPlatform === 'whatsapp');
+
+  const loadThread = useCallback(
+    async (opts?: { silent?: boolean }) => {
+      if (!siteId) return;
+      const response = await fetch(`/api/admin/support/site/${siteId}`);
+      const payload = (await response.json()) as ThreadPayload;
+      if (!response.ok) {
+        if (!opts?.silent) setError(payload.error || 'گفتگو باز نشد');
+        setLoading(false);
+        return;
+      }
+      setThread(payload.user || null);
+      setMessages(payload.messages || []);
+      setMissingTable(Boolean(payload.missingTable));
+      if (!opts?.silent) {
+        setError('');
+        setWarning('');
+      }
+      setChannels((current) => (current.length ? current : defaultChannels(payload.user)));
+      const lastUser = [...(payload.messages || [])].reverse().find((item) => item.sender === 'user');
+      markSupportSeen(siteId, lastUser?.createdAt || new Date().toISOString());
       setLoading(false);
-      return;
-    }
-    setThread(payload.user || null);
-    setMessages(payload.messages || []);
-    setMissingTable(Boolean(payload.missingTable));
-    setError('');
-    setChannels((current) => {
-      if (current.length) return current;
-      const next: SupportChannel[] = [];
-      if (payload.user?.telegramId) next.push('telegram');
-      if (payload.user?.whatsappPhone) next.push('whatsapp');
-      return next;
-    });
-    const lastUser = [...(payload.messages || [])].reverse().find((item) => item.sender === 'user');
-    markSupportSeen(siteId, lastUser?.createdAt || new Date().toISOString());
-    setLoading(false);
-  }, [siteId]);
+    },
+    [siteId],
+  );
 
   useEffect(() => {
     void loadThread();
@@ -62,7 +74,7 @@ export function SupportInbox({ siteId }: { siteId: string }) {
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      void loadThread();
+      void loadThread({ silent: true });
     }, 8000);
     return () => window.clearInterval(timer);
   }, [loadThread]);
@@ -77,25 +89,39 @@ export function SupportInbox({ siteId }: { siteId: string }) {
     if (!body.trim()) return;
     setSending(true);
     setError('');
+    setWarning('');
     try {
       const response = await fetch(`/api/admin/support/site/${siteId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body, channels }),
+        body: JSON.stringify({
+          body,
+          channels: channels.length ? channels : defaultChannels(thread),
+        }),
       });
       const payload = (await response.json()) as {
         error?: string;
+        warning?: string;
         message?: SupportMessage;
         missingTable?: boolean;
       };
-      if (!response.ok) {
+      if (payload.message) {
+        setBody('');
+        setMessages((current) =>
+          current.some((item) => item.id === payload.message!.id)
+            ? current
+            : [...current, payload.message!],
+        );
+      }
+      if (payload.missingTable) setMissingTable(true);
+      if (!response.ok && !payload.message) {
         setError(payload.error || 'ارسال نشد');
-        setMissingTable(Boolean(payload.missingTable));
         return;
       }
-      setBody('');
-      if (payload.message) setMessages((current) => [...current, payload.message!]);
-      await loadThread();
+      if (payload.warning || (payload.error && payload.message)) {
+        setWarning(payload.warning || payload.error || '');
+      }
+      await loadThread({ silent: true });
     } catch {
       setError('ارتباط با سرور برقرار نشد');
     } finally {
@@ -118,8 +144,8 @@ export function SupportInbox({ siteId }: { siteId: string }) {
             <h2 className="text-lg font-black">{thread.businessName || thread.name}</h2>
             <p className="mt-1 text-xs text-zinc-500">
               {thread.subdomain ? `${thread.subdomain}.easywebbuilder.de` : 'بدون زیردامنه'}
-              {thread.telegramId ? ' · تلگرام' : ''}
-              {thread.whatsappPhone ? ' · واتساپ' : ''}
+              {canTelegram ? ' · تلگرام' : ''}
+              {canWhatsapp ? ' · واتساپ' : ''}
             </p>
           </header>
 
@@ -153,7 +179,9 @@ export function SupportInbox({ siteId }: { siteId: string }) {
                       {formatTime(item.createdAt)}
                       {fromAdmin && item.channels.length
                         ? ` · ${item.channels.map((channel) => (channel === 'telegram' ? 'تلگرام' : 'واتساپ')).join(' و ')}`
-                        : ''}
+                        : fromAdmin
+                          ? ' · در پنل ثبت شد'
+                          : ''}
                     </p>
                   </article>
                 );
@@ -169,20 +197,19 @@ export function SupportInbox({ siteId }: { siteId: string }) {
             }}
           >
             <div className="mb-3 flex flex-wrap gap-3 text-sm">
-              <label className={`flex items-center gap-2 ${thread.telegramId ? '' : 'opacity-40'}`}>
+              <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={channels.includes('telegram')}
-                  disabled={!thread.telegramId}
                   onChange={() => toggleChannel('telegram')}
                 />
                 تلگرام
               </label>
-              <label className={`flex items-center gap-2 ${thread.whatsappPhone ? '' : 'opacity-40'}`}>
+              <label className={`flex items-center gap-2 ${canWhatsapp ? '' : 'opacity-40'}`}>
                 <input
                   type="checkbox"
                   checked={channels.includes('whatsapp')}
-                  disabled={!thread.whatsappPhone}
+                  disabled={!canWhatsapp}
                   onChange={() => toggleChannel('whatsapp')}
                 />
                 واتساپ
@@ -196,10 +223,11 @@ export function SupportInbox({ siteId }: { siteId: string }) {
               className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-zinc-900/10"
             />
             {error ? <p className="mt-2 text-sm font-semibold text-rose-600">{error}</p> : null}
+            {warning ? <p className="mt-2 text-sm font-semibold text-amber-700">{warning}</p> : null}
             <div className="mt-3 flex justify-end">
               <button
                 type="submit"
-                disabled={sending || !body.trim() || !channels.length}
+                disabled={sending || !body.trim()}
                 className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold text-white hover:bg-zinc-700 disabled:opacity-50"
               >
                 {sending ? 'در حال ارسال...' : 'ارسال'}
