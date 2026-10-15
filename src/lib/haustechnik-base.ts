@@ -105,19 +105,49 @@ function overlayByKey<T extends object>(incoming: T[], fallback: T[], keyOf: (it
   if (!incoming.length) return fallback;
   if (!fallback.length) return incoming;
   const key = (item: T) => keyOf(item).trim().toLowerCase();
-  const isPatch =
-    incoming.length < fallback.length &&
-    incoming.every((item) => {
-      const itemKey = key(item);
-      return Boolean(itemKey && fallback.some((row) => key(row) === itemKey));
-    });
-  if (!isPatch) return incoming;
-  const result = fallback.map((row) => ({ ...row }));
+  const matchesFallback = (item: T) => {
+    const itemKey = key(item);
+    return Boolean(itemKey && fallback.some((row) => key(row) === itemKey));
+  };
+  const allNew = incoming.every((item) => !matchesFallback(item));
+  if (allNew && incoming.length >= fallback.length) return incoming;
+
+  const merged = new Map<string, T>();
+  for (const row of fallback) {
+    const itemKey = key(row);
+    if (itemKey) merged.set(itemKey, { ...row });
+  }
   for (const item of incoming) {
     const itemKey = key(item);
-    const index = result.findIndex((row) => key(row) === itemKey);
-    if (index >= 0) result[index] = { ...result[index], ...item };
-    else result.push({ ...item });
+    if (!itemKey) continue;
+    const next = { ...(merged.get(itemKey) ?? ({} as T)) } as T;
+    for (const [field, value] of Object.entries(item)) {
+      if (value !== "" && value !== undefined && value !== null) {
+        (next as Record<string, unknown>)[field] = value;
+      }
+    }
+    merged.set(itemKey, next);
+  }
+
+  const used = new Set<string>();
+  const result: T[] = [];
+  for (const item of incoming) {
+    const itemKey = key(item);
+    if (!itemKey || used.has(itemKey)) continue;
+    const row = merged.get(itemKey);
+    if (row) {
+      result.push(row);
+      used.add(itemKey);
+    }
+  }
+  for (const row of fallback) {
+    const itemKey = key(row);
+    if (!itemKey || used.has(itemKey)) continue;
+    const value = merged.get(itemKey);
+    if (value) {
+      result.push(value);
+      used.add(itemKey);
+    }
   }
   return result;
 }
